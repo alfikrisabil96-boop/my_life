@@ -4,23 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#5b5bff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="My Life" />
+  <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+  <link rel="apple-touch-icon" href="./logo.svg" />
+  <link rel="manifest" href="./manifest.json" />
   <title>My Life — Personal Command Center</title>
-
   <!-- Google Fonts: Bricolage Grotesque, Instrument Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-  <!-- Leaflet Interactive Map CSS & JS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
   <script>
     tailwind.config = {
       theme: {
@@ -34,7 +32,6 @@
       }
     }
   </script>
-
   <style>
     /* Neo-Brutalist Design Tokens */
     :root {
@@ -244,29 +241,20 @@
       font-weight: 700;
     }
 
-    /* Map container styling */
-    #route-map {
+    /* Map Iframe Frame */
+    .map-frame-box {
       width: 100%;
       height: 360px;
       border: 3px solid var(--line);
       border-radius: 14px;
-      z-index: 1;
       background-color: var(--bg);
+      display: block;
     }
 
     @media (min-width: 1024px) {
-      #route-map {
-        height: 410px;
+      .map-frame-box {
+        height: 420px;
       }
-    }
-
-    .leaflet-popup-content-wrapper, .leaflet-popup-tip {
-      background-color: var(--surface) !important;
-      color: var(--ink) !important;
-      border: 2.5px solid var(--line) !important;
-      box-shadow: 3px 3px 0 var(--sh) !important;
-      border-radius: 12px !important;
-      font-family: "Instrument Sans", sans-serif !important;
     }
 
     /* Custom Scrollbar */
@@ -308,21 +296,10 @@
 </head>
 <body class="min-h-screen flex flex-col lg:flex-row antialiased">
 
-  <!-- Inline SVG Brand Logo helper -->
-  <template id="brand-logo-template">
-    <svg viewBox="0 0 64 64" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect width="64" height="64" rx="14" fill="#5b5bff"/>
-      <rect x="10" y="12" width="44" height="40" rx="10" fill="#ffd23f" stroke="#14122b" stroke-width="4"/>
-      <circle cx="24" cy="28" r="4" fill="#14122b"/>
-      <circle cx="40" cy="28" r="4" fill="#14122b"/>
-      <path d="M22 39 Q32 46 42 39" fill="none" stroke="#14122b" stroke-width="4" stroke-linecap="round"/>
-    </svg>
-  </template>
-
-  <!-- Toast / Message Box Container (Pengganti alert()) -->
+  <!-- Toast / Message Box Container -->
   <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2.5 max-w-sm w-[calc(100%-2rem)] pointer-events-none"></div>
 
-  <!-- Confirmation Modal (Pengganti confirm()) -->
+  <!-- Confirmation Modal -->
   <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
     <div class="brutal-card max-w-md w-full p-6">
       <div class="flex items-center gap-3 mb-3">
@@ -410,7 +387,12 @@
   <aside class="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 z-30 border-r-[3px] border-[var(--line)]" style="background-color:var(--surface);">
     <div class="p-5 border-b-[3px] border-[var(--line)]">
       <div class="flex items-center gap-3">
-        <div class="brand-logo-slot w-11 h-11 rounded-xl overflow-hidden border-[3px] border-[var(--line)] shrink-0" style="box-shadow:3px 3px 0 var(--sh);"></div>
+        <img
+          src="./logo.svg"
+          alt="Logo My Life"
+          class="w-11 h-11 rounded-xl object-cover border-[3px] border-[var(--line)] shrink-0"
+          style="box-shadow:3px 3px 0 var(--sh);"
+        />
         <div>
           <h1 class="text-xl font-extrabold tracking-tight leading-none">
             My Life <span class="text-xs font-mono px-1.5 py-0.5 rounded border-2 border-[var(--line)]" style="background:var(--yellow);color:#14122b;">ML.</span>
@@ -457,7 +439,7 @@
       </button>
       <button onclick="switchTab('location')" data-tab="location" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-left border-[3px] border-transparent transition">
         <i class="fa-solid fa-route w-5 text-center"></i>
-        <span>Rute, Peta & Lokasi</span>
+        <span>Rute & Riwayat Lokasi</span>
       </button>
       <button onclick="switchTab('calendar')" data-tab="calendar" class="nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-left border-[3px] border-transparent transition">
         <i class="fa-solid fa-calendar-days w-5 text-center"></i>
@@ -490,7 +472,12 @@
       <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
         <!-- Mobile Brand -->
         <div class="flex items-center gap-2.5 lg:hidden">
-          <div class="brand-logo-slot w-9 h-9 rounded-xl overflow-hidden border-[2.5px] border-[var(--line)] shrink-0" style="box-shadow:2px 2px 0 var(--sh);"></div>
+          <img
+            src="./logo.svg"
+            alt="Logo My Life"
+            class="w-9 h-9 rounded-xl object-cover border-[2.5px] border-[var(--line)] shrink-0"
+            style="box-shadow:2px 2px 0 var(--sh);"
+          />
           <div>
             <h1 class="text-base font-extrabold leading-tight">My Life</h1>
             <p class="text-[11px] text-muted-brutal font-medium">Sabil Alfikri • IF UNSAM</p>
@@ -622,8 +609,8 @@
                   <i class="fa-solid fa-route text-base" style="color:var(--coral);"></i>
                   <span class="text-[10px] font-mono text-muted-brutal">PETA</span>
                 </div>
-                <span class="text-xs font-extrabold">Rute Rumah-Kampus</span>
-                <span class="text-[11px] text-muted-brutal font-normal">Buka Peta & GPS</span>
+                <span class="text-xs font-extrabold">Rute Kampus</span>
+                <span class="text-[11px] text-muted-brutal font-normal">Rumah ↔ UNSAM</span>
               </button>
 
               <button onclick="switchTab('finance')"
@@ -632,7 +619,7 @@
                   <i class="fa-solid fa-wallet text-base" style="color:var(--yellow);"></i>
                   <span class="text-[10px] font-mono text-muted-brutal">2 DOMPET</span>
                 </div>
-                <span class="text-xs font-extrabold">Keuangan</span>
+                <span class="text-xs font-extrabold">Catat Uang</span>
                 <span class="text-[11px] text-muted-brutal font-normal">Utama & Kedua</span>
               </button>
             </div>
@@ -669,15 +656,15 @@
           </div>
         </div>
 
-        <!-- 4 Summary Metrics Grid (Neo-Brutalist Stat Blocks) -->
+        <!-- 4 Summary Metrics Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <div onclick="switchTab('finance')" class="cursor-pointer brutal-card-sm p-5 hover:-translate-y-0.5">
             <div class="flex items-center justify-between mb-2">
-              <span class="brutal-pill px-2.5 py-0.5 text-[11px]" style="background-color:var(--mint);color:#14122b;">2 Dompet Aktif</span>
+              <span class="brutal-pill px-2.5 py-0.5 text-[11px]" style="background-color:var(--mint);color:#14122b;">Total 2 Dompet</span>
               <i class="fa-solid fa-wallet text-lg" style="color:var(--mint);"></i>
             </div>
             <p id="dash-balance" class="text-2xl font-extrabold font-mono mt-1">Rp 0</p>
-            <p id="dash-savings" class="text-xs text-muted-brutal mt-1 font-mono font-semibold truncate">Utama: Rp 0 • Kedua: Rp 0</p>
+            <p id="dash-wallet-breakdown" class="text-[11px] text-muted-brutal mt-1 font-mono font-semibold truncate">Utama: Rp 0 • Kedua: Rp 0</p>
           </div>
 
           <div onclick="switchTab('unsam')" class="cursor-pointer brutal-card-sm p-5 hover:-translate-y-0.5">
@@ -700,17 +687,16 @@
 
           <div onclick="switchTab('location')" class="cursor-pointer brutal-card-sm p-5 hover:-translate-y-0.5">
             <div class="flex items-center justify-between mb-2">
-              <span class="brutal-pill px-2.5 py-0.5 text-[11px]" style="background-color:var(--coral);color:#14122b;">Rute & GPS</span>
+              <span class="brutal-pill px-2.5 py-0.5 text-[11px]" style="background-color:var(--coral);color:#14122b;">Rute & Agenda</span>
               <i class="fa-solid fa-route text-lg" style="color:var(--coral);"></i>
             </div>
-            <p id="dash-next-event" class="text-base font-extrabold mt-1 truncate">Rumah → Kampus UNSAM</p>
-            <p id="dash-last-location" class="text-xs text-muted-brutal mt-1 font-medium truncate"><i class="fa-solid fa-location-dot mr-1"></i>Belum ada log lokasi</p>
+            <p id="dash-next-event" class="text-base font-extrabold mt-1 truncate">Belum ada agenda</p>
+            <p id="dash-last-location" class="text-xs text-muted-brutal mt-1 font-medium truncate"><i class="fa-solid fa-route mr-1"></i>Rumah ↔ UNSAM</p>
           </div>
         </div>
 
         <!-- Dashboard Bottom Split: Today's Classes & Upcoming Agenda -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Today's UNSAM Schedule -->
           <div class="brutal-card p-6">
             <div class="flex items-center justify-between mb-4">
               <div>
@@ -724,7 +710,6 @@
             <div id="dash-today-classes" class="space-y-2.5"></div>
           </div>
 
-          <!-- Upcoming Events -->
           <div class="brutal-card p-6">
             <div class="flex items-center justify-between mb-4">
               <div>
@@ -763,7 +748,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Form Tambah Mata Kuliah -->
           <div class="brutal-card p-6 h-fit">
             <h3 class="text-lg font-extrabold mb-4 flex items-center gap-2">
               <i class="fa-solid fa-plus-circle accent-ink"></i> Tambah Jadwal Kuliah
@@ -803,7 +787,6 @@
             </form>
           </div>
 
-          <!-- Daftar Jadwal Kuliah & Checklist Absen -->
           <div class="lg:col-span-2 space-y-4">
             <div class="flex flex-wrap gap-1.5" id="day-filter-pills">
               <button onclick="filterCourseDay('Semua')" data-day="Semua" class="day-pill brutal-pill px-3.5 py-1.5 text-xs" style="background-color:var(--blue);color:#fff;">Semua Hari</button>
@@ -822,96 +805,89 @@
 
       <!-- ==================== TAB 3: KEUANGAN (2 DOMPET) & TABUNGAN ==================== -->
       <section id="tab-finance" class="tab-section hidden space-y-6">
-        <!-- 2 Wallets Showcase + Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <!-- DOMPET 1: DOMPET UTAMA -->
-          <div class="brutal-card p-6 relative overflow-hidden">
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <span class="brutal-pill inline-flex items-center gap-1.5 px-3 py-0.5 text-xs font-mono" style="background-color:var(--mint);color:#14122b;">
-                  <i class="fa-solid fa-wallet text-[11px]"></i> DOMPET 1 • UTAMA
+        <!-- 2 Wallet Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <!-- Dompet 1: Dompet Utama -->
+          <div class="brutal-card p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="brutal-pill px-3 py-1 text-xs font-mono" style="background-color:var(--mint);color:#14122b;">
+                  <i class="fa-solid fa-wallet mr-1.5"></i>DOMPET 1 • UTAMA
                 </span>
-                <h3 id="wallet1-name-display" class="text-xl font-extrabold mt-2">Dompet Utama</h3>
-                <p class="text-xs text-muted-brutal">Kebutuhan harian, kuliah, bensin & operasional utama</p>
+                <span class="text-[11px] font-mono text-muted-brutal font-semibold">Operasional & Harian</span>
               </div>
-              <button onclick="renameWallet('wallet1')" class="brutal-btn px-2.5 py-1.5 text-xs" title="Ubah Nama Dompet Utama">
-                <i class="fa-solid fa-pen"></i>
-              </button>
+              <p class="text-xs font-bold text-muted-brutal">Saldo Dompet Utama</p>
+              <p id="w1-balance" class="text-3xl sm:text-4xl font-extrabold font-mono mt-1">Rp 0</p>
             </div>
-
-            <p id="wallet1-balance" class="text-3xl sm:text-4xl font-extrabold font-mono mt-4">Rp 0</p>
-
-            <div class="mt-4 pt-3.5 border-t-[2.5px] border-[var(--line)] grid grid-cols-3 gap-2 text-xs">
+            <div class="grid grid-cols-3 gap-2.5 mt-5 pt-4 border-t-[2.5px] border-[var(--line)]">
               <div class="brutal-inset p-2.5">
-                <span class="block text-[10px] font-bold text-muted-brutal">Masuk</span>
-                <span id="wallet1-income" class="font-mono font-extrabold" style="color:var(--mint);">Rp 0</span>
+                <p class="text-[10px] font-bold text-muted-brutal">Masuk</p>
+                <p id="w1-income" class="text-xs sm:text-sm font-extrabold font-mono mt-0.5" style="color:var(--mint);">Rp 0</p>
               </div>
               <div class="brutal-inset p-2.5">
-                <span class="block text-[10px] font-bold text-muted-brutal">Keluar</span>
-                <span id="wallet1-expense" class="font-mono font-extrabold" style="color:var(--coral);">Rp 0</span>
+                <p class="text-[10px] font-bold text-muted-brutal">Keluar</p>
+                <p id="w1-expense" class="text-xs sm:text-sm font-extrabold font-mono mt-0.5" style="color:var(--coral);">Rp 0</p>
               </div>
               <div class="brutal-inset p-2.5">
-                <span class="block text-[10px] font-bold text-muted-brutal">Tabung</span>
-                <span id="wallet1-savings" class="font-mono font-extrabold" style="color:var(--yellow);">Rp 0</span>
+                <p class="text-[10px] font-bold text-muted-brutal">Tabungan</p>
+                <p id="w1-savings" class="text-xs sm:text-sm font-extrabold font-mono mt-0.5" style="color:var(--yellow);">Rp 0</p>
               </div>
             </div>
           </div>
 
-          <!-- DOMPET 2: DOMPET KEDUA -->
-          <div class="brutal-card p-6 relative overflow-hidden">
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <span class="brutal-pill inline-flex items-center gap-1.5 px-3 py-0.5 text-xs font-mono" style="background-color:var(--yellow);color:#14122b;">
-                  <i class="fa-solid fa-vault text-[11px]"></i> DOMPET 2 • KEDUA
+          <!-- Dompet 2: Dompet Kedua -->
+          <div class="brutal-card p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="brutal-pill px-3 py-1 text-xs font-mono" style="background-color:var(--yellow);color:#14122b;">
+                  <i class="fa-solid fa-vault mr-1.5"></i>DOMPET 2 • KEDUA
                 </span>
-                <h3 id="wallet2-name-display" class="text-xl font-extrabold mt-2">Dompet Kedua (Saikostore & Cadangan)</h3>
-                <p class="text-xs text-muted-brutal">Kas usaha Saikostore, dana darurat & pos terpisah</p>
+                <span class="text-[11px] font-mono text-muted-brutal font-semibold">Bisnis Saikostore / Cadangan</span>
               </div>
-              <button onclick="renameWallet('wallet2')" class="brutal-btn px-2.5 py-1.5 text-xs" title="Ubah Nama Dompet Kedua">
-                <i class="fa-solid fa-pen"></i>
-              </button>
+              <p class="text-xs font-bold text-muted-brutal">Saldo Dompet Kedua</p>
+              <p id="w2-balance" class="text-3xl sm:text-4xl font-extrabold font-mono mt-1">Rp 0</p>
             </div>
-
-            <p id="wallet2-balance" class="text-3xl sm:text-4xl font-extrabold font-mono mt-4">Rp 0</p>
-
-            <div class="mt-4 pt-3.5 border-t-[2.5px] border-[var(--line)] grid grid-cols-3 gap-2 text-xs">
+            <div class="grid grid-cols-3 gap-2.5 mt-5 pt-4 border-t-[2.5px] border-[var(--line)]">
               <div class="brutal-inset p-2.5">
-                <span class="block text-[10px] font-bold text-muted-brutal">Masuk</span>
-                <span id="wallet2-income" class="font-mono font-extrabold" style="color:var(--mint);">Rp 0</span>
+                <p class="text-[10px] font-bold text-muted-brutal">Masuk</p>
+                <p id="w2-income" class="text-xs sm:text-sm font-extrabold font-mono mt-0.5" style="color:var(--mint);">Rp 0</p>
               </div>
               <div class="brutal-inset p-2.5">
-                <span class="block text-[10px] font-bold text-muted-brutal">Keluar</span>
-                <span id="wallet2-expense" class="font-mono font-extrabold" style="color:var(--coral);">Rp 0</span>
+                <p class="text-[10px] font-bold text-muted-brutal">Keluar</p>
+                <p id="w2-expense" class="text-xs sm:text-sm font-extrabold font-mono mt-0.5" style="color:var(--coral);">Rp 0</p>
               </div>
               <div class="brutal-inset p-2.5">
-                <span class="block text-[10px] font-bold text-muted-brutal">Tabung</span>
-                <span id="wallet2-savings" class="font-mono font-extrabold" style="color:var(--yellow);">Rp 0</span>
+                <p class="text-[10px] font-bold text-muted-brutal">Tabungan</p>
+                <p id="w2-savings" class="text-xs sm:text-sm font-extrabold font-mono mt-0.5" style="color:var(--yellow);">Rp 0</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Total Gabungan & Target Tabungan -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div class="brutal-card-sm p-4">
-            <p class="text-xs font-bold text-muted-brutal">Total Saldo 2 Dompet</p>
-            <p id="fin-total-balance" class="text-2xl font-extrabold font-mono mt-1">Rp 0</p>
-            <span class="text-[11px] text-muted-brutal">Gabungan Dompet Utama + Kedua</span>
+        <!-- Combined Summary Strip -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="brutal-card-sm p-5">
+            <p class="text-xs font-bold text-muted-brutal">Total Gabungan (2 Dompet)</p>
+            <p id="fin-balance" class="text-2xl font-extrabold font-mono mt-1">Rp 0</p>
+            <span class="text-[11px] text-muted-brutal">Dompet Utama + Dompet Kedua</span>
           </div>
-          <div class="brutal-card-sm p-4">
-            <p class="text-xs font-bold text-muted-brutal">Total Pemasukan & Pengeluaran</p>
-            <p id="fin-total-flow" class="text-base font-extrabold font-mono mt-1.5">
-              <span id="fin-income" style="color:var(--mint);">Rp 0</span> / <span id="fin-expense" style="color:var(--coral);">Rp 0</span>
-            </p>
-            <span class="text-[11px] text-muted-brutal">Semua dompet</span>
+          <div class="brutal-card-sm p-5">
+            <p class="text-xs font-bold text-muted-brutal">Total Pemasukan</p>
+            <p id="fin-income" class="text-2xl font-extrabold font-mono mt-1" style="color:var(--mint);">Rp 0</p>
+            <span class="text-[11px] text-muted-brutal">Seluruh pemasukan tercatat</span>
           </div>
-          <div class="brutal-card-sm p-4">
+          <div class="brutal-card-sm p-5">
+            <p class="text-xs font-bold text-muted-brutal">Total Pengeluaran</p>
+            <p id="fin-expense" class="text-2xl font-extrabold font-mono mt-1" style="color:var(--coral);">Rp 0</p>
+            <span class="text-[11px] text-muted-brutal">Seluruh pengeluaran tercatat</span>
+          </div>
+          <div class="brutal-card-sm p-5">
             <div class="flex items-center justify-between">
-              <p class="text-xs font-bold text-muted-brutal">Tabungan Terkumpul</p>
+              <p class="text-xs font-bold text-muted-brutal">Total Tabungan</p>
               <button onclick="editSavingsTarget()" class="text-[11px] font-bold accent-ink hover:underline">Ubah Target</button>
             </div>
-            <p id="fin-savings" class="text-xl font-extrabold font-mono mt-1" style="color:var(--yellow);">Rp 0</p>
-            <div class="w-full h-2.5 rounded-full mt-1.5 overflow-hidden border-2 border-[var(--line)]" style="background-color:var(--bg);">
+            <p id="fin-savings" class="text-2xl font-extrabold font-mono mt-1" style="color:var(--yellow);">Rp 0</p>
+            <div class="w-full h-3 rounded-full mt-2 overflow-hidden border-2 border-[var(--line)]" style="background-color:var(--bg);">
               <div id="fin-savings-bar" class="h-full transition-all duration-500" style="width:0%;background-color:var(--mint);"></div>
             </div>
             <p id="fin-savings-target-text" class="text-[11px] text-muted-brutal mt-1 font-mono font-semibold">0% dari Rp 5.000.000</p>
@@ -919,7 +895,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Left Column: Form Transaksi + Pindah Saldo Antar Dompet -->
+          <!-- Forms Column -->
           <div class="space-y-6 h-fit">
             <!-- Form Transaksi Baru -->
             <div class="brutal-card p-6">
@@ -928,11 +904,21 @@
               </h3>
               <form id="form-finance" onsubmit="addTransaction(event)" class="space-y-3.5">
                 <div>
-                  <label class="block text-xs font-bold text-muted-brutal mb-1">Pilih Dompet</label>
-                  <select id="tx-wallet" class="brutal-input w-full px-3.5 py-2.5 text-sm font-bold">
-                    <option value="wallet1">Dompet Utama (Dompet 1)</option>
-                    <option value="wallet2">Dompet Kedua (Dompet 2)</option>
-                  </select>
+                  <label class="block text-xs font-bold text-muted-brutal mb-1.5">Pilih Dompet</label>
+                  <div class="grid grid-cols-2 gap-2">
+                    <label class="cursor-pointer">
+                      <input type="radio" name="tx-wallet" value="utama" checked class="peer hidden">
+                      <div class="brutal-inset text-center py-2 px-2 text-xs font-extrabold peer-checked:bg-[#3bceac] peer-checked:text-[#14122b] transition">
+                        <i class="fa-solid fa-wallet mr-1"></i> Dompet Utama
+                      </div>
+                    </label>
+                    <label class="cursor-pointer">
+                      <input type="radio" name="tx-wallet" value="kedua" class="peer hidden">
+                      <div class="brutal-inset text-center py-2 px-2 text-xs font-extrabold peer-checked:bg-[#ffd23f] peer-checked:text-[#14122b] transition">
+                        <i class="fa-solid fa-vault mr-1"></i> Dompet Kedua
+                      </div>
+                    </label>
+                  </div>
                 </div>
 
                 <div>
@@ -992,37 +978,32 @@
               </form>
             </div>
 
-            <!-- Transfer Antar Dompet (Dompet Utama <-> Dompet Kedua) -->
+            <!-- Form Pindah Saldo Antar Dompet -->
             <div class="brutal-card p-6">
               <h3 class="text-base font-extrabold mb-3 flex items-center gap-2">
                 <i class="fa-solid fa-right-left" style="color:var(--mint);"></i> Pindah Saldo Antar Dompet
               </h3>
-              <form id="form-transfer" onsubmit="transferBetweenWallets(event)" class="space-y-3">
+              <form onsubmit="transferBetweenWallets(event)" class="space-y-3">
                 <div>
                   <label class="block text-xs font-bold text-muted-brutal mb-1">Arah Transfer</label>
-                  <select id="transfer-dir" class="brutal-input w-full px-3 py-2 text-xs font-bold">
-                    <option value="w1-to-w2">Dompet Utama → Dompet Kedua</option>
-                    <option value="w2-to-w1">Dompet Kedua → Dompet Utama</option>
+                  <select id="transfer-direction" class="brutal-input w-full px-3 py-2 text-xs font-bold">
+                    <option value="utama-to-kedua">Dompet Utama → Dompet Kedua</option>
+                    <option value="kedua-to-utama">Dompet Kedua → Dompet Utama</option>
                   </select>
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-muted-brutal mb-1">Nominal Transfer (Rp)</label>
                   <input type="number" id="transfer-amount" required min="100" step="100" placeholder="Contoh: 50000"
-                         class="brutal-input w-full px-3 py-2 text-sm font-mono font-bold">
+                         class="brutal-input w-full px-3 py-2 text-xs font-mono font-bold">
                 </div>
-                <div>
-                  <label class="block text-xs font-bold text-muted-brutal mb-1">Catatan (Opsional)</label>
-                  <input type="text" id="transfer-note" placeholder="Contoh: Alokasi kas Saikostore"
-                         class="brutal-input w-full px-3 py-2 text-xs">
-                </div>
-                <button type="submit" class="brutal-btn-mint w-full py-2.5 text-xs">
-                  <i class="fa-solid fa-arrow-right-arrow-left mr-1.5"></i> Pindahkan Saldo
+                <button type="submit" class="brutal-btn-mint w-full py-2 text-xs">
+                  Pindahkan Saldo Sekarang
                 </button>
               </form>
             </div>
           </div>
 
-          <!-- Right Column: Ringkasan Kategori & Riwayat Transaksi -->
+          <!-- Ringkasan Kategori & Riwayat Transaksi -->
           <div class="lg:col-span-2 space-y-5">
             <div class="brutal-card p-6">
               <h3 class="text-base font-extrabold mb-3">Distribusi Pengeluaran Terbesar</h3>
@@ -1035,15 +1016,14 @@
                 <div class="flex flex-wrap items-center gap-2">
                   <select id="tx-wallet-filter" onchange="renderFinance()" class="brutal-input px-3 py-1.5 text-xs font-bold">
                     <option value="all">Semua Dompet</option>
-                    <option value="wallet1">Dompet Utama</option>
-                    <option value="wallet2">Dompet Kedua</option>
+                    <option value="utama">Dompet Utama</option>
+                    <option value="kedua">Dompet Kedua</option>
                   </select>
                   <select id="tx-filter" onchange="renderFinance()" class="brutal-input px-3 py-1.5 text-xs font-bold">
                     <option value="all">Semua Jenis</option>
-                    <option value="expense">Pengeluaran</option>
-                    <option value="income">Pemasukan</option>
-                    <option value="savings">Tabungan</option>
-                    <option value="transfer">Transfer Dompet</option>
+                    <option value="expense">Pengeluaran Saja</option>
+                    <option value="income">Pemasukan Saja</option>
+                    <option value="savings">Setoran Tabungan</option>
                   </select>
                 </div>
               </div>
@@ -1056,7 +1036,6 @@
       <!-- ==================== TAB 4: OLAHRAGA & BULKING ==================== -->
       <section id="tab-workout" class="tab-section hidden space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Interactive Workout / Rest Timer -->
           <div class="brutal-card p-6 flex flex-col justify-between">
             <div>
               <span class="brutal-pill inline-block px-2.5 py-0.5 text-[11px] font-mono" style="background-color:var(--yellow);color:#14122b;">
@@ -1091,7 +1070,6 @@
             </div>
           </div>
 
-          <!-- Program Latihan Harian -->
           <div class="brutal-card p-6">
             <div class="flex items-center justify-between mb-4">
               <div>
@@ -1108,7 +1086,6 @@
             </form>
           </div>
 
-          <!-- Tracker Berat Badan & Nutrisi Bulking -->
           <div class="brutal-card p-6 space-y-5">
             <div>
               <h3 class="text-lg font-extrabold flex items-center gap-2">
@@ -1139,118 +1116,100 @@
         </div>
       </section>
 
-      <!-- ==================== TAB 5: RUTE, PETA & RIWAYAT LOKASI GPS ==================== -->
+      <!-- ==================== TAB 5: RUTE KAMPUS, PETA & RIWAYAT LOKASI GPS ==================== -->
       <section id="tab-location" class="tab-section hidden space-y-6">
-        <!-- Route Planner & Interactive Map Card -->
+        <!-- Route Planner & Embedded Google Maps Card -->
         <div class="brutal-card p-6 space-y-5">
-          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <span class="brutal-pill inline-flex items-center gap-1.5 px-3 py-0.5 text-xs font-mono mb-2" style="background-color:var(--yellow);color:#14122b;">
-                <i class="fa-solid fa-map-location-dot"></i> RUTE & PETA INTERAKTIF
+              <span class="brutal-pill inline-block px-3 py-0.5 text-xs font-mono mb-2" style="background-color:var(--yellow);color:#14122b;">
+                NAVIGASI RUTE & PETA LANGSUNG
               </span>
-              <h2 class="text-2xl sm:text-3xl font-extrabold">Rute Rumah → Kampus UNSAM</h2>
-              <p class="text-xs sm:text-sm text-muted-brutal mt-1">
-                Pantau jalur perjalanan dari rumah ke Kampus Universitas Samudra (UNSAM) Langsa lengkap dengan estimasi jarak & waktu tempuh.
-              </p>
+              <h2 class="text-2xl sm:text-3xl font-extrabold">Rute Rumah ↔ Kampus UNSAM Langsa</h2>
+              <p class="text-xs sm:text-sm text-muted-brutal mt-1">Lihat jalur perjalanan langsung di peta dari rumah (Manyak Payed, Aceh Tamiang) menuju Kampus UNSAM.</p>
             </div>
-
-            <div class="flex flex-wrap items-center gap-2">
-              <button onclick="applyRoutePreset('home-to-campus')" class="brutal-btn-blue px-3.5 py-2 text-xs">
-                <i class="fa-solid fa-house mr-1"></i> Rumah → Kampus UNSAM
+            <div class="flex flex-wrap gap-2">
+              <button type="button" onclick="applyRoutePreset('home-to-campus')" class="brutal-btn-mint px-3.5 py-2 text-xs">
+                <i class="fa-solid fa-house mr-1"></i> Simpang Lhee → Kampus
               </button>
-              <button onclick="applyRoutePreset('campus-to-home')" class="brutal-btn px-3.5 py-2 text-xs">
-                <i class="fa-solid fa-graduation-cap mr-1"></i> Kampus UNSAM → Rumah
+              <button type="button" onclick="applyRoutePreset('campus-to-home')" class="brutal-btn-yellow px-3.5 py-2 text-xs">
+                <i class="fa-solid fa-graduation-cap mr-1"></i> Kampus → Simpang Lhee
               </button>
-              <a id="btn-open-gmaps-dir" href="#" target="_blank" rel="noopener noreferrer"
-                 class="brutal-btn-mint px-3.5 py-2 text-xs flex items-center gap-1.5">
-                <i class="fa-solid fa-diamond-turn-right"></i>
-                <span>Navigasi Google Maps</span>
+              <a id="btn-open-gmaps-dir" href="https://www.google.com/maps/dir/?api=1&origin=4.257222,98.080000&destination=4.460800,97.971500&travelmode=driving"
+                 target="_blank" rel="noopener noreferrer"
+                 class="brutal-btn-blue px-4 py-2 text-xs flex items-center gap-1.5">
+                <span>Buka Google Maps</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
               </a>
             </div>
           </div>
 
-          <!-- Route Origin & Destination Selectors -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <!-- Route Origin/Destination Selectors & Distance Info -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
             <div class="brutal-inset p-3.5">
-              <label class="block text-[11px] font-mono uppercase font-bold accent-ink mb-1">Titik Awal (Asal)</label>
-              <select id="route-origin-select" onchange="handleRouteSelectChange()" class="brutal-input w-full px-3 py-2 text-xs sm:text-sm font-bold">
-                <option value="home">Rumah (Simpang Lhee, Manyak Payed, Aceh Tamiang)</option>
-                <option value="campus">Kampus UNSAM Langsa (Meurandeh)</option>
+              <label class="block text-[11px] font-mono uppercase font-bold accent-ink mb-1">Titik Berangkat</label>
+              <select id="route-origin-select" onchange="handleRouteSelectChange()" class="brutal-input w-full px-3 py-2 text-xs font-bold">
+                <option value="home">Desa Simpang Lhee, Manyak Payed, Aceh Tamiang</option>
+                <option value="campus">Kampus Universitas Samudra (UNSAM)</option>
               </select>
-              <p id="route-origin-coord" class="text-[11px] font-mono text-muted-brutal mt-1.5">Koordinat: 4.265500, 98.054500</p>
+              <p id="route-origin-coord" class="text-[11px] font-mono text-muted-brutal mt-1.5">Koordinat: 4.257222, 98.080000</p>
             </div>
 
             <div class="brutal-inset p-3.5">
-              <label class="block text-[11px] font-mono uppercase font-bold" style="color:var(--mint);">Titik Tujuan</label>
-              <select id="route-dest-select" onchange="handleRouteSelectChange()" class="brutal-input w-full px-3 py-2 text-xs sm:text-sm font-bold">
-                <option value="campus" selected>Kampus UNSAM Langsa (Meurandeh)</option>
-                <option value="home">Rumah (Simpang Lhee, Manyak Payed, Aceh Tamiang)</option>
+              <label class="block text-[11px] font-mono uppercase font-bold accent-ink mb-1">Titik Tujuan</label>
+              <select id="route-dest-select" onchange="handleRouteSelectChange()" class="brutal-input w-full px-3 py-2 text-xs font-bold">
+                <option value="campus">Kampus Universitas Samudra (UNSAM)</option>
+                <option value="home">Desa Simpang Lhee, Manyak Payed, Aceh Tamiang</option>
               </select>
               <p id="route-dest-coord" class="text-[11px] font-mono text-muted-brutal mt-1.5">Koordinat: 4.460800, 97.971500</p>
             </div>
-          </div>
 
-          <!-- Route Stats Strip -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="brutal-card-sm p-3.5 flex items-center gap-3">
-              <span class="w-9 h-9 rounded-xl border-2 border-[var(--line)] flex items-center justify-center shrink-0" style="background:var(--yellow);color:#14122b;">
-                <i class="fa-solid fa-road"></i>
-              </span>
-              <div>
-                <span class="text-[11px] font-bold text-muted-brutal">Perkiraan Jarak Jalur</span>
-                <p id="route-distance-text" class="text-base font-extrabold font-mono">~32.4 km</p>
+            <div class="brutal-inset p-3.5 flex flex-col justify-center">
+              <span class="text-[11px] font-mono uppercase font-bold text-muted-brutal">Estimasi Jarak & Waktu</span>
+              <div class="flex items-baseline gap-2.5 mt-1">
+                <p id="route-distance-text" class="text-xl font-extrabold font-mono" style="color:var(--mint);">~29.8 km</p>
+                <span class="text-xs text-muted-brutal font-bold">•</span>
+                <p id="route-duration-text" class="text-sm font-extrabold font-mono accent-ink">~35 - 45 menit</p>
               </div>
-            </div>
-
-            <div class="brutal-card-sm p-3.5 flex items-center gap-3">
-              <span class="w-9 h-9 rounded-xl border-2 border-[var(--line)] flex items-center justify-center shrink-0" style="background:var(--mint);color:#14122b;">
-                <i class="fa-solid fa-motorcycle"></i>
-              </span>
-              <div>
-                <span class="text-[11px] font-bold text-muted-brutal">Estimasi Waktu Tempuh</span>
-                <p id="route-duration-text" class="text-base font-extrabold font-mono">~45 - 55 menit</p>
-              </div>
-            </div>
-
-            <div class="brutal-card-sm p-3.5 flex items-center gap-3">
-              <span class="w-9 h-9 rounded-xl border-2 border-[var(--line)] flex items-center justify-center shrink-0" style="background:var(--blue);color:#ffffff;">
-                <i class="fa-solid fa-compass"></i>
-              </span>
-              <div>
-                <span class="text-[11px] font-bold text-muted-brutal">Koridor Perjalanan</span>
-                <p class="text-xs sm:text-sm font-extrabold">Manyak Payed → Langsa</p>
-              </div>
+              <p class="text-[11px] text-muted-brutal mt-1">Jalur Lintas Medan – Banda Aceh</p>
             </div>
           </div>
 
-          <!-- Leaflet Interactive Map -->
-          <div class="relative">
-            <div id="route-map"></div>
-            <div id="map-offline-fallback" class="hidden brutal-inset p-6 text-center mt-3">
-              <i class="fa-solid fa-map text-2xl accent-ink mb-2"></i>
-              <p class="text-sm font-extrabold">Peta Interaktif Memerlukan Koneksi Internet (Tile OpenStreetMap)</p>
-              <p class="text-xs text-muted-brutal mt-1">Gunakan tombol <strong>Navigasi Google Maps</strong> di atas untuk membuka rute langsung di Chrome / Google Maps.</p>
+          <!-- Embedded Google Maps Route View -->
+          <div>
+            <iframe
+              id="route-map-frame"
+              class="map-frame-box"
+              title="Peta Rute Desa Simpang Lhee ke Kampus UNSAM"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://maps.google.com/maps?saddr=Desa+Simpang+Lhee,+Manyak+Payed,+Aceh+Tamiang&daddr=Universitas+Samudra,+Langsa&output=embed">
+            </iframe>
+            <div class="flex flex-wrap items-center justify-between gap-2 mt-2.5 text-[11px] text-muted-brutal">
+              <span id="map-caption-text" class="font-medium">Menampilkan rute langsung di Google Maps (Desa Simpang Lhee ↔ Kampus UNSAM Langsa).</span>
+              <button type="button" onclick="syncRouteUIAndMap()" class="font-bold accent-ink hover:underline">
+                <i class="fa-solid fa-rotate-right mr-1"></i> Reset ke Rute Utama
+              </button>
             </div>
           </div>
         </div>
 
-        <!-- GPS Logger & History Split -->
+        <!-- Bottom Grid: GPS Logger & Saved Location History -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Form Catat Lokasi GPS -->
           <div class="brutal-card p-6 h-fit">
             <span class="brutal-pill inline-block px-2.5 py-0.5 text-[11px] font-mono" style="background-color:var(--mint);color:#14122b;">
               GPS LOGGER
             </span>
             <h3 class="text-xl font-extrabold mt-2">Catat Lokasi Saat Ini</h3>
-            <p class="text-xs text-muted-brutal mt-1">Simpan riwayat lokasi lengkap dengan koordinat, tampil di peta & tautan Google Maps.</p>
+            <p class="text-xs text-muted-brutal mt-1">Simpan riwayat lokasi lengkap dengan koordinat & tautan Google Maps.</p>
 
             <div class="mt-4 space-y-3.5">
               <div>
                 <label class="block text-xs font-bold text-muted-brutal mb-1.5">Preset Tempat Cepat</label>
                 <div class="flex flex-wrap gap-1.5">
-                  <button type="button" onclick="setLocationPreset('Rumah Manyak Payed')" class="brutal-btn px-2.5 py-1 text-xs">Rumah</button>
                   <button type="button" onclick="setLocationPreset('Kampus UNSAM Langsa')" class="brutal-btn px-2.5 py-1 text-xs">Kampus UNSAM</button>
                   <button type="button" onclick="setLocationPreset('Lab Komputer UNSAM')" class="brutal-btn px-2.5 py-1 text-xs">Lab Komputer</button>
+                  <button type="button" onclick="setLocationPreset('Desa Simpang Lhee, Manyak Payed')" class="brutal-btn px-2.5 py-1 text-xs">Simpang Lhee</button>
                   <button type="button" onclick="setLocationPreset('Warkop / Tempat Kerja')" class="brutal-btn px-2.5 py-1 text-xs">Warkop</button>
                 </div>
               </div>
@@ -1263,7 +1222,7 @@
 
               <div>
                 <label class="block text-xs font-bold text-muted-brutal mb-1">Catatan Aktivitas (Opsional)</label>
-                <input type="text" id="loc-note" placeholder="Contoh: Berangkat dari rumah / Absen kuliah"
+                <input type="text" id="loc-note" placeholder="Contoh: Absen kuliah / COD Saikostore"
                        class="brutal-input w-full px-3.5 py-2.5 text-sm">
               </div>
 
@@ -1272,16 +1231,15 @@
                 <i class="fa-solid fa-location-crosshairs"></i>
                 <span>Deteksi GPS & Simpan Riwayat</span>
               </button>
-              <p id="gps-status-msg" class="text-[11px] text-muted-brutal text-center font-medium">Pastikan izin lokasi (GPS) aktif di browser Chrome.</p>
+              <p id="gps-status-msg" class="text-[11px] text-muted-brutal text-center font-medium">Pastikan izin lokasi (GPS) aktif di browser.</p>
             </div>
           </div>
 
-          <!-- Daftar Riwayat Lokasi -->
           <div class="lg:col-span-2 brutal-card p-6">
             <div class="flex items-center justify-between mb-4">
               <div>
                 <h3 class="text-lg font-extrabold">Riwayat Perjalanan & Lokasi</h3>
-                <p class="text-xs text-muted-brutal">Semua titik lokasi yang tersimpan di perangkatmu</p>
+                <p class="text-xs text-muted-brutal">Klik "Lihat di Peta" untuk menyorot titik lokasi pada peta di atas</p>
               </div>
               <span id="loc-count-badge" class="brutal-pill px-3 py-1 text-xs font-mono" style="background-color:var(--yellow);color:#14122b;">0 Lokasi</span>
             </div>
@@ -1293,7 +1251,6 @@
       <!-- ==================== TAB 6: KALENDER & AGENDA PENTING ==================== -->
       <section id="tab-calendar" class="tab-section hidden space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Interactive Monthly Calendar -->
           <div class="lg:col-span-2 brutal-card p-6">
             <div class="flex items-center justify-between mb-5">
               <div>
@@ -1320,7 +1277,6 @@
             <div id="calendar-grid" class="grid grid-cols-7 gap-1.5"></div>
           </div>
 
-          <!-- Selected Date Agenda & Add Event Form -->
           <div class="brutal-card p-6 flex flex-col justify-between space-y-5">
             <div>
               <span class="brutal-pill inline-block px-2.5 py-0.5 text-[11px] font-mono" style="background-color:var(--yellow);color:#14122b;">
@@ -1368,14 +1324,14 @@
               PENGATURAN & DATA
             </span>
             <h2 class="text-2xl font-extrabold">Backup, Restore & Pengaturan My Life</h2>
-            <p class="text-xs sm:text-sm text-muted-brutal mt-1">Semua data tersimpan otomatis di browser Chrome (LocalStorage). Unduh cadangan JSON agar aman saat pindah perangkat.</p>
+            <p class="text-xs sm:text-sm text-muted-brutal mt-1">Semua data tersimpan otomatis di browser (LocalStorage). Unduh cadangan JSON agar aman saat pindah perangkat.</p>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button onclick="exportDataJSON()" class="brutal-btn p-4 text-left">
               <i class="fa-solid fa-download accent-ink text-xl mb-2"></i>
               <h4 class="text-sm font-extrabold">Export Backup (.JSON)</h4>
-              <p class="text-xs text-muted-brutal font-normal mt-1">Simpan semua jadwal, 2 dompet, rute/lokasi & agenda ke file.</p>
+              <p class="text-xs text-muted-brutal font-normal mt-1">Simpan semua jadwal, transaksi 2 dompet, lokasi & agenda ke file.</p>
             </button>
 
             <label class="cursor-pointer brutal-btn p-4 text-left">
@@ -1386,7 +1342,6 @@
             </label>
           </div>
 
-          <!-- Theme & Harmonic Chime Box -->
           <div class="p-4 brutal-inset flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h4 class="text-sm font-extrabold">Tema Tampilan & Suara Chime</h4>
@@ -1402,16 +1357,15 @@
             </div>
           </div>
 
-          <!-- Tips Chrome & Alarm -->
           <div class="p-4 brutal-inset space-y-2.5">
             <div class="flex items-center justify-between gap-2">
               <h4 class="text-sm font-extrabold flex items-center gap-2">
-                <i class="fa-brands fa-chrome accent-ink"></i> Tips Penggunaan di Chrome & Alarm HP
+                <i class="fa-solid fa-mobile-screen-button accent-ink"></i> Instal di HP & Tips Alarm
               </h4>
               <span class="brutal-pill px-2.5 py-0.5 text-[10px] font-mono" style="background:var(--yellow);color:#14122b;">CHROME READY</span>
             </div>
             <ul class="text-xs text-muted-brutal space-y-1.5 leading-relaxed list-disc pl-4">
-              <li><span class="font-bold" style="color:var(--ink);">Buka di Chrome:</span> Simpan file <span class="font-mono font-bold">my-life-chrome.html</span> lalu buka langsung di Google Chrome HP atau laptop (bisa juga di-pin ke Layar Utama Chrome).</li>
+              <li><span class="font-bold" style="color:var(--ink);">Buka di Chrome:</span> Klik dua kali file HTML ini untuk langsung membukanya di Google Chrome.</li>
               <li><span class="font-bold" style="color:var(--ink);">Agar Alarm Pasti Berbunyi Saat Layar Mati:</span> Gunakan tombol <span class="font-bold">Set Alarm HP</span> pada jadwal kuliah UNSAM atau agenda kalender untuk mengatur alarm bawaan Android, Google Calendar, atau file <span class="font-mono">.ics</span>.</li>
             </ul>
           </div>
@@ -1433,27 +1387,27 @@
 
   <!-- Mobile Bottom Navigation Bar -->
   <nav class="lg:hidden fixed bottom-0 inset-x-0 z-30 border-t-[3px] border-[var(--line)] px-1.5 py-2 flex items-center justify-around" style="background-color:var(--surface);">
-    <button onclick="switchTab('dashboard')" data-tab="dashboard" class="mobile-nav-btn is-active flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl text-[10px] font-bold">
+    <button onclick="switchTab('dashboard')" data-tab="dashboard" class="mobile-nav-btn is-active flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-xl text-[10px] font-bold">
       <i class="fa-solid fa-house text-sm"></i>
       <span>Home</span>
     </button>
-    <button onclick="switchTab('unsam')" data-tab="unsam" class="mobile-nav-btn flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl text-[10px] font-bold">
+    <button onclick="switchTab('unsam')" data-tab="unsam" class="mobile-nav-btn flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-xl text-[10px] font-bold">
       <i class="fa-solid fa-graduation-cap text-sm"></i>
       <span>Absen</span>
     </button>
-    <button onclick="switchTab('finance')" data-tab="finance" class="mobile-nav-btn flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl text-[10px] font-bold">
+    <button onclick="switchTab('finance')" data-tab="finance" class="mobile-nav-btn flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-xl text-[10px] font-bold">
       <i class="fa-solid fa-wallet text-sm"></i>
       <span>Dompet</span>
     </button>
-    <button onclick="switchTab('workout')" data-tab="workout" class="mobile-nav-btn flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl text-[10px] font-bold">
+    <button onclick="switchTab('workout')" data-tab="workout" class="mobile-nav-btn flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-xl text-[10px] font-bold">
       <i class="fa-solid fa-dumbbell text-sm"></i>
       <span>Gym</span>
     </button>
-    <button onclick="switchTab('location')" data-tab="location" class="mobile-nav-btn flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl text-[10px] font-bold">
+    <button onclick="switchTab('location')" data-tab="location" class="mobile-nav-btn flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-xl text-[10px] font-bold">
       <i class="fa-solid fa-route text-sm"></i>
       <span>Rute</span>
     </button>
-    <button onclick="switchTab('calendar')" data-tab="calendar" class="mobile-nav-btn flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl text-[10px] font-bold">
+    <button onclick="switchTab('calendar')" data-tab="calendar" class="mobile-nav-btn flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-xl text-[10px] font-bold">
       <i class="fa-solid fa-calendar-days text-sm"></i>
       <span>Agenda</span>
     </button>
@@ -1463,26 +1417,27 @@
     // =========================================================================
     // 1. STATE MANAGEMENT, THEME & LOCALSTORAGE PERSISTENCE
     // =========================================================================
-    const STORAGE_KEY = 'SABIL_OS_DATA_V2';
+    const STORAGE_KEY = 'SABIL_OS_DATA_V1';
     const THEME_KEY = 'SABIL_OS_THEME';
     const HARI_LIST = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
     const BULAN_LIST = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-    // Titik tetap Rute Rumah <-> Kampus UNSAM
     const ROUTE_NODES = {
       home: {
         id: 'home',
-        shortName: 'Rumah',
-        label: 'Rumah (Simpang Lhee, Manyak Payed, Aceh Tamiang)',
-        lat: 4.2655,
-        lng: 98.0545
+        name: 'Desa Simpang Lhee, Manyak Payed, Aceh Tamiang',
+        shortName: 'Desa Simpang Lhee',
+        query: 'Desa+Simpang+Lhee,+Manyak+Payed,+Aceh+Tamiang',
+        lat: 4.257222,
+        lng: 98.080000
       },
       campus: {
         id: 'campus',
-        shortName: 'Kampus UNSAM',
-        label: 'Kampus Universitas Samudra (UNSAM) Langsa',
-        lat: 4.4608,
-        lng: 97.9715
+        name: 'Kampus Universitas Samudra (UNSAM)',
+        shortName: 'Kampus UNSAM Langsa',
+        query: 'Universitas+Samudra,+Langsa',
+        lat: 4.460800,
+        lng: 97.971500
       }
     };
 
@@ -1495,10 +1450,6 @@
 
     const DEFAULT_STATE = {
       saikostoreNote: 'Cek orderan masuk hari ini, pastikan stok produk digital & katalog Saikostore siap.',
-      walletNames: {
-        wallet1: 'Dompet Utama',
-        wallet2: 'Dompet Kedua (Saikostore & Cadangan)'
-      },
       courses: [
         { id: 1, name: 'Pengantar Teknologi Informasi', day: 'Senin', time: '08:00', room: 'Lab LTU301', attendedDate: '' },
         { id: 2, name: 'Matematika Diskrit', day: 'Senin', time: '10:30', room: 'R. Kuliah 3', attendedDate: '' },
@@ -1508,11 +1459,11 @@
         { id: 6, name: 'Fisika Dasar', day: 'Jumat', time: '09:00', room: 'Lab Fisika', attendedDate: '' }
       ],
       transactions: [
-        { id: 101, wallet: 'wallet1', type: 'income', amount: 250000, category: 'Uang Saku / Kiriman', note: 'Saldo awal Dompet Utama', date: getTodayISO() },
-        { id: 102, wallet: 'wallet2', type: 'income', amount: 420000, category: 'Profit Saikostore', note: 'Kas & profit penjualan Saikostore di Dompet Kedua', date: getTodayISO() },
-        { id: 103, wallet: 'wallet1', type: 'savings', amount: 75000, category: 'Tabungan Masa Depan', note: 'Tabungan dari Dompet Utama', date: getTodayISO() },
-        { id: 104, wallet: 'wallet1', type: 'expense', amount: 35000, category: 'Bensin NMAX', note: 'Isi bensin rute Rumah ke Kampus UNSAM', date: getTodayISO() },
-        { id: 105, wallet: 'wallet2', type: 'expense', amount: 45000, category: 'Kuota & Internet', note: 'Paket data operasional Saikostore', date: getTodayISO() }
+        { id: 101, wallet: 'kedua', type: 'income', amount: 350000, category: 'Profit Saikostore', note: 'Keuntungan penjualan Saikostore minggu ini', date: getTodayISO() },
+        { id: 102, wallet: 'kedua', type: 'savings', amount: 150000, category: 'Tabungan Masa Depan', note: 'Sisihkan profit ke tabungan dompet kedua', date: getTodayISO() },
+        { id: 103, wallet: 'utama', type: 'income', amount: 250000, category: 'Uang Saku / Kiriman', note: 'Saldo operasional harian & kuliah', date: getTodayISO() },
+        { id: 104, wallet: 'utama', type: 'expense', amount: 35000, category: 'Bensin NMAX', note: 'Isi bensin Yamaha NMAX', date: getTodayISO() },
+        { id: 105, wallet: 'utama', type: 'expense', amount: 22000, category: 'Makan & Kopi', note: 'Nasi ayam + kopi sebelum ngampus', date: getTodayISO() }
       ],
       savingsTarget: 5000000,
       workouts: [
@@ -1534,18 +1485,18 @@
       locations: [
         {
           id: 401,
-          name: 'Rumah (Simpang Lhee, Manyak Payed)',
-          note: 'Titik awal keberangkatan ke kampus',
-          lat: 4.2655,
-          lng: 98.0545,
+          name: 'Kampus Universitas Samudra (UNSAM)',
+          note: 'Jadwal kuliah Informatika & absen portal',
+          lat: 4.460800,
+          lng: 97.971500,
           timestamp: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })
         },
         {
           id: 402,
-          name: 'Kampus Universitas Samudra (UNSAM) Langsa',
-          note: 'Titik tujuan kampus Teknik Informatika',
-          lat: 4.4608,
-          lng: 97.9715,
+          name: 'Desa Simpang Lhee, Manyak Payed, Aceh Tamiang',
+          note: 'Titik awal keberangkatan dari rumah ke kampus UNSAM',
+          lat: 4.257222,
+          lng: 98.080000,
           timestamp: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })
         }
       ],
@@ -1565,15 +1516,6 @@
     let currentCourseFilter = 'Semua';
     let calendarViewDate = new Date();
     let selectedCalendarDate = getTodayISO();
-
-    function hydrateBrandLogos() {
-      const tpl = document.getElementById('brand-logo-template');
-      if (!tpl) return;
-      document.querySelectorAll('.brand-logo-slot').forEach(slot => {
-        slot.innerHTML = '';
-        slot.appendChild(tpl.content.cloneNode(true));
-      });
-    }
 
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
@@ -1609,22 +1551,13 @@
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
         const parsed = JSON.parse(raw);
-        const merged = {
-          ...JSON.parse(JSON.stringify(DEFAULT_STATE)),
-          ...parsed,
-          walletNames: {
-            ...DEFAULT_STATE.walletNames,
-            ...(parsed.walletNames || {})
-          },
-          routeConfig: {
-            ...DEFAULT_STATE.routeConfig,
-            ...(parsed.routeConfig || {})
-          }
-        };
-        merged.transactions = (merged.transactions || []).map(tx => ({
-          wallet: tx.wallet === 'wallet2' ? 'wallet2' : 'wallet1',
-          ...tx
-        }));
+        const merged = { ...JSON.parse(JSON.stringify(DEFAULT_STATE)), ...parsed };
+        if (Array.isArray(merged.transactions)) {
+          merged.transactions = merged.transactions.map(tx => ({
+            ...tx,
+            wallet: tx.wallet === 'kedua' ? 'kedua' : 'utama'
+          }));
+        }
         return merged;
       } catch (e) {
         console.error('Gagal memuat state:', e);
@@ -1770,12 +1703,6 @@
         }
       });
 
-      if (tabName === 'location') {
-        setTimeout(() => {
-          initOrRefreshRouteMap();
-        }, 80);
-      }
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1837,9 +1764,6 @@
       }
     }
 
-    // =========================================================================
-    // HP ALARM & REMINDER HELPER MODAL
-    // =========================================================================
     function getNextDateForDay(dayName) {
       const targetIdx = HARI_LIST.indexOf(dayName);
       if (targetIdx === -1) return getTodayISO();
@@ -2233,35 +2157,18 @@
     }
 
     // =========================================================================
-    // 5. MODULE: KEUANGAN (2 DOMPET: DOMPET UTAMA & DOMPET KEDUA) & TABUNGAN
+    // 5. MODULE: KEUANGAN (2 DOMPET) & TABUNGAN
     // =========================================================================
-    function getWalletLabel(walletKey) {
-      return appState.walletNames?.[walletKey] || (walletKey === 'wallet2' ? 'Dompet Kedua' : 'Dompet Utama');
-    }
-
-    function renameWallet(walletKey) {
-      const currentName = getWalletLabel(walletKey);
-      const nextName = walletKey === 'wallet1'
-        ? (currentName === 'Dompet Utama' ? 'Dompet Utama (Harian & Kuliah)' : 'Dompet Utama')
-        : (currentName === 'Dompet Kedua (Saikostore & Cadangan)' ? 'Dompet Kedua (Kas & Tabungan)' : 'Dompet Kedua (Saikostore & Cadangan)');
-
-      appState.walletNames[walletKey] = nextName;
-      saveState();
-      renderFinance();
-      showToast(`Label dompet diperbarui menjadi "${nextName}".`, 'info');
-    }
-
     function renderFinance() {
       const stats = {
-        wallet1: { income: 0, expense: 0, savings: 0, transferDelta: 0 },
-        wallet2: { income: 0, expense: 0, savings: 0, transferDelta: 0 }
+        utama: { income: 0, expense: 0, savings: 0 },
+        kedua: { income: 0, expense: 0, savings: 0 }
       };
       const categoryTotals = {};
 
       appState.transactions.forEach(tx => {
-        const w = tx.wallet === 'wallet2' ? 'wallet2' : 'wallet1';
+        const w = tx.wallet === 'kedua' ? 'kedua' : 'utama';
         const amt = Number(tx.amount) || 0;
-
         if (tx.type === 'income') {
           stats[w].income += amt;
         } else if (tx.type === 'expense') {
@@ -2269,47 +2176,37 @@
           categoryTotals[tx.category] = (categoryTotals[tx.category] || 0) + amt;
         } else if (tx.type === 'savings') {
           stats[w].savings += amt;
-        } else if (tx.type === 'transfer') {
-          if (tx.direction === 'w1-to-w2') {
-            stats.wallet1.transferDelta -= amt;
-            stats.wallet2.transferDelta += amt;
-          } else if (tx.direction === 'w2-to-w1') {
-            stats.wallet2.transferDelta -= amt;
-            stats.wallet1.transferDelta += amt;
-          }
         }
       });
 
-      const w1Bal = stats.wallet1.income - stats.wallet1.expense - stats.wallet1.savings + stats.wallet1.transferDelta;
-      const w2Bal = stats.wallet2.income - stats.wallet2.expense - stats.wallet2.savings + stats.wallet2.transferDelta;
-      const totalBal = w1Bal + w2Bal;
-      const totalIncome = stats.wallet1.income + stats.wallet2.income;
-      const totalExpense = stats.wallet1.expense + stats.wallet2.expense;
-      const totalSavings = stats.wallet1.savings + stats.wallet2.savings;
+      const w1Balance = stats.utama.income - stats.utama.expense - stats.utama.savings;
+      const w2Balance = stats.kedua.income - stats.kedua.expense - stats.kedua.savings;
+
+      document.getElementById('w1-balance').textContent = formatRupiah(w1Balance);
+      document.getElementById('w1-income').textContent = formatRupiah(stats.utama.income);
+      document.getElementById('w1-expense').textContent = formatRupiah(stats.utama.expense);
+      document.getElementById('w1-savings').textContent = formatRupiah(stats.utama.savings);
+
+      document.getElementById('w2-balance').textContent = formatRupiah(w2Balance);
+      document.getElementById('w2-income').textContent = formatRupiah(stats.kedua.income);
+      document.getElementById('w2-expense').textContent = formatRupiah(stats.kedua.expense);
+      document.getElementById('w2-savings').textContent = formatRupiah(stats.kedua.savings);
+
+      const totalIncome = stats.utama.income + stats.kedua.income;
+      const totalExpense = stats.utama.expense + stats.kedua.expense;
+      const totalSavings = stats.utama.savings + stats.kedua.savings;
+      const totalBalance = w1Balance + w2Balance;
       const pct = Math.min(100, Math.round((totalSavings / (appState.savingsTarget || 1)) * 100));
 
-      document.getElementById('wallet1-name-display').textContent = getWalletLabel('wallet1');
-      document.getElementById('wallet2-name-display').textContent = getWalletLabel('wallet2');
-
-      document.getElementById('wallet1-balance').textContent = formatRupiah(w1Bal);
-      document.getElementById('wallet1-income').textContent = formatRupiah(stats.wallet1.income);
-      document.getElementById('wallet1-expense').textContent = formatRupiah(stats.wallet1.expense);
-      document.getElementById('wallet1-savings').textContent = formatRupiah(stats.wallet1.savings);
-
-      document.getElementById('wallet2-balance').textContent = formatRupiah(w2Bal);
-      document.getElementById('wallet2-income').textContent = formatRupiah(stats.wallet2.income);
-      document.getElementById('wallet2-expense').textContent = formatRupiah(stats.wallet2.expense);
-      document.getElementById('wallet2-savings').textContent = formatRupiah(stats.wallet2.savings);
-
-      document.getElementById('fin-total-balance').textContent = formatRupiah(totalBal);
+      document.getElementById('fin-balance').textContent = formatRupiah(totalBalance);
       document.getElementById('fin-income').textContent = formatRupiah(totalIncome);
       document.getElementById('fin-expense').textContent = formatRupiah(totalExpense);
       document.getElementById('fin-savings').textContent = formatRupiah(totalSavings);
       document.getElementById('fin-savings-bar').style.width = `${pct}%`;
       document.getElementById('fin-savings-target-text').textContent = `${pct}% dari target ${formatRupiah(appState.savingsTarget)}`;
 
-      document.getElementById('dash-balance').textContent = formatRupiah(totalBal);
-      document.getElementById('dash-savings').textContent = `Utama: ${formatRupiah(w1Bal)} • Kedua: ${formatRupiah(w2Bal)}`;
+      document.getElementById('dash-balance').textContent = formatRupiah(totalBalance);
+      document.getElementById('dash-wallet-breakdown').textContent = `Utama: ${formatRupiah(w1Balance)} • Kedua: ${formatRupiah(w2Balance)}`;
 
       const breakdownEl = document.getElementById('expense-breakdown');
       const sortedCats = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]);
@@ -2334,16 +2231,12 @@
         }).join('');
       }
 
-      const typeFilter = document.getElementById('tx-filter').value;
       const walletFilter = document.getElementById('tx-wallet-filter').value;
+      const typeFilter = document.getElementById('tx-filter').value;
       const listEl = document.getElementById('tx-list');
-
       const filteredTx = appState.transactions
-        .filter(t => {
-          const matchType = typeFilter === 'all' || t.type === typeFilter;
-          const matchWallet = walletFilter === 'all' || t.wallet === walletFilter || (t.type === 'transfer' && (t.direction?.includes(walletFilter === 'wallet1' ? 'w1' : 'w2')));
-          return matchType && matchWallet;
-        })
+        .filter(t => (walletFilter === 'all' || (t.wallet || 'utama') === walletFilter))
+        .filter(t => (typeFilter === 'all' || t.type === typeFilter))
         .slice()
         .reverse();
 
@@ -2351,31 +2244,27 @@
         listEl.innerHTML = `<p class="text-xs text-muted-brutal text-center py-6">Tidak ada riwayat transaksi untuk filter ini.</p>`;
       } else {
         listEl.innerHTML = filteredTx.map(tx => {
-          const isTransfer = tx.type === 'transfer';
           const badge = tx.type === 'income'
             ? { color: 'var(--mint)', sign: '+', icon: 'fa-arrow-trend-up', bg: 'var(--mint)' }
             : tx.type === 'savings'
             ? { color: 'var(--yellow)', sign: '→', icon: 'fa-piggy-bank', bg: 'var(--yellow)' }
-            : isTransfer
-            ? { color: 'var(--blue)', sign: '⇄', icon: 'fa-right-left', bg: 'var(--blue)' }
             : { color: 'var(--coral)', sign: '-', icon: 'fa-arrow-trend-down', bg: 'var(--coral)' };
 
-          const walletBadgeText = isTransfer
-            ? (tx.direction === 'w1-to-w2' ? 'Utama → Kedua' : 'Kedua → Utama')
-            : (tx.wallet === 'wallet2' ? 'Dompet Kedua' : 'Dompet Utama');
-
-          const walletBadgeBg = tx.wallet === 'wallet2' ? 'var(--yellow)' : 'var(--mint)';
+          const isSecond = tx.wallet === 'kedua';
+          const walletTag = isSecond
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border border-[var(--line)]" style="background:var(--yellow);color:#14122b;">Dompet Kedua</span>`
+            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border border-[var(--line)]" style="background:var(--mint);color:#14122b;">Dompet Utama</span>`;
 
           return `
             <div class="flex items-center justify-between p-3 brutal-inset gap-2">
               <div class="flex items-center gap-3 min-w-0">
-                <div class="w-9 h-9 rounded-xl border-2 border-[var(--line)] flex items-center justify-center shrink-0" style="background-color:${badge.bg};color:${isTransfer ? '#ffffff' : '#14122b'};">
+                <div class="w-9 h-9 rounded-xl border-2 border-[var(--line)] flex items-center justify-center shrink-0" style="background-color:${badge.bg};color:#14122b;">
                   <i class="fa-solid ${badge.icon} text-xs"></i>
                 </div>
                 <div class="min-w-0">
                   <div class="flex flex-wrap items-center gap-1.5">
                     <p class="text-xs font-extrabold truncate">${tx.note}</p>
-                    <span class="brutal-pill px-2 py-0.5 text-[10px] font-mono" style="background-color:${walletBadgeBg};color:#14122b;">${walletBadgeText}</span>
+                    ${walletTag}
                   </div>
                   <p class="text-[11px] text-muted-brutal truncate font-medium mt-0.5">${tx.category} • ${tx.date}</p>
                 </div>
@@ -2394,7 +2283,7 @@
 
     function addTransaction(e) {
       e.preventDefault();
-      const wallet = document.getElementById('tx-wallet').value;
+      const wallet = document.querySelector('input[name="tx-wallet"]:checked').value;
       const type = document.querySelector('input[name="tx-type"]:checked').value;
       const amount = Number(document.getElementById('tx-amount').value);
       const category = document.getElementById('tx-category').value;
@@ -2410,43 +2299,51 @@
         date: getTodayISO()
       });
       saveState();
-      e.target.reset();
-      document.getElementById('tx-wallet').value = wallet;
+      document.getElementById('tx-amount').value = '';
+      document.getElementById('tx-note').value = '';
       renderFinance();
-      showToast(`Transaksi dicatat ke ${getWalletLabel(wallet)}!`, 'success');
+      const walletName = wallet === 'kedua' ? 'Dompet Kedua' : 'Dompet Utama';
+      showToast(`Transaksi dicatat ke ${walletName}!`, 'success');
     }
 
     function transferBetweenWallets(e) {
       e.preventDefault();
-      const direction = document.getElementById('transfer-dir').value;
+      const direction = document.getElementById('transfer-direction').value;
       const amount = Number(document.getElementById('transfer-amount').value);
-      const customNote = document.getElementById('transfer-note').value.trim();
+      if (!amount || amount <= 0) return;
 
-      if (isNaN(amount) || amount <= 0) {
-        showToast('Masukkan nominal transfer yang valid.', 'warning');
-        return;
-      }
+      const fromWallet = direction === 'utama-to-kedua' ? 'utama' : 'kedua';
+      const toWallet = direction === 'utama-to-kedua' ? 'kedua' : 'utama';
+      const fromLabel = fromWallet === 'utama' ? 'Dompet Utama' : 'Dompet Kedua';
+      const toLabel = toWallet === 'utama' ? 'Dompet Utama' : 'Dompet Kedua';
+      const nowId = Date.now();
+      const today = getTodayISO();
 
-      const fromWallet = direction === 'w1-to-w2' ? 'wallet1' : 'wallet2';
-      const toWallet = direction === 'w1-to-w2' ? 'wallet2' : 'wallet1';
-      const defaultNote = `Transfer ${getWalletLabel(fromWallet)} → ${getWalletLabel(toWallet)}`;
-
-      appState.transactions.push({
-        id: Date.now(),
-        wallet: fromWallet,
-        type: 'transfer',
-        direction,
-        amount,
-        category: 'Transfer Antar Dompet',
-        note: customNote || defaultNote,
-        date: getTodayISO()
-      });
+      appState.transactions.push(
+        {
+          id: nowId,
+          wallet: fromWallet,
+          type: 'expense',
+          amount,
+          category: 'Transfer Antar Dompet',
+          note: `Transfer keluar ke ${toLabel}`,
+          date: today
+        },
+        {
+          id: nowId + 1,
+          wallet: toWallet,
+          type: 'income',
+          amount,
+          category: 'Transfer Antar Dompet',
+          note: `Transfer masuk dari ${fromLabel}`,
+          date: today
+        }
+      );
 
       saveState();
       document.getElementById('transfer-amount').value = '';
-      document.getElementById('transfer-note').value = '';
       renderFinance();
-      showToast(`Saldo ${formatRupiah(amount)} dipindahkan ke ${getWalletLabel(toWallet)}!`, 'success');
+      showToast(`${formatRupiah(amount)} dipindahkan dari ${fromLabel} ke ${toLabel}!`, 'success');
     }
 
     function deleteTransaction(id) {
@@ -2590,11 +2487,8 @@
     }
 
     // =========================================================================
-    // 7. MODULE: RUTE RUMAH <-> KAMPUS UNSAM, PETA LEAFLET & RIWAYAT LOKASI GPS
+    // 7. MODULE: RUTE RUMAH <-> KAMPUS UNSAM, PETA & RIWAYAT LOKASI GPS
     // =========================================================================
-    let leafletMap = null;
-    let routeLayerGroup = null;
-
     function calculateHaversineKm(lat1, lon1, lat2, lon2) {
       const R = 6371;
       const toRad = deg => deg * (Math.PI / 180);
@@ -2609,7 +2503,7 @@
     }
 
     function getActiveRouteNodes() {
-      const originKey = appState.routeConfig?.origin === 'campus' ? 'campus' : 'home';
+      const originKey = appState.routeConfig && appState.routeConfig.origin === 'campus' ? 'campus' : 'home';
       const destKey = originKey === 'home' ? 'campus' : 'home';
       return {
         origin: ROUTE_NODES[originKey],
@@ -2625,8 +2519,8 @@
       }
       saveState();
       syncRouteUIAndMap();
-      const { origin, destination } = getActiveRouteNodes();
-      showToast(`Rute diatur: ${origin.shortName} → ${destination.shortName}`, 'info');
+      const nodes = getActiveRouteNodes();
+      showToast(`Rute diatur: ${nodes.origin.shortName} → ${nodes.destination.shortName}`, 'info');
     }
 
     function handleRouteSelectChange() {
@@ -2639,14 +2533,16 @@
     }
 
     function syncRouteUIAndMap() {
-      const { origin, destination } = getActiveRouteNodes();
+      const nodes = getActiveRouteNodes();
+      const origin = nodes.origin;
+      const destination = nodes.destination;
+
       document.getElementById('route-origin-select').value = origin.id;
       document.getElementById('route-dest-select').value = destination.id;
 
       document.getElementById('route-origin-coord').textContent = `Koordinat: ${origin.lat.toFixed(6)}, ${origin.lng.toFixed(6)}`;
       document.getElementById('route-dest-coord').textContent = `Koordinat: ${destination.lat.toFixed(6)}, ${destination.lng.toFixed(6)}`;
 
-      // Perkiraan jarak jalan raya (sekitar 1.26x jarak lurus lintas kabupaten)
       const straightKm = calculateHaversineKm(origin.lat, origin.lng, destination.lat, destination.lng);
       const roadEstKm = (straightKm * 1.26).toFixed(1);
       const minMins = Math.max(25, Math.round((Number(roadEstKm) / 48) * 60));
@@ -2654,113 +2550,31 @@
 
       document.getElementById('route-distance-text').textContent = `~${roadEstKm} km`;
       document.getElementById('route-duration-text').textContent = `~${minMins} - ${maxMins} menit`;
-      document.getElementById('dash-next-event').textContent = `${origin.shortName} → ${destination.shortName} (~${roadEstKm} km)`;
 
-      const gmapsDirUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${destination.lat},${destination.lng}&travelmode=driving`;
+      const gmapsDirUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin.query}&destination=${destination.query}&travelmode=driving`;
       document.getElementById('btn-open-gmaps-dir').href = gmapsDirUrl;
 
-      initOrRefreshRouteMap();
+      const mapFrame = document.getElementById('route-map-frame');
+      const captionEl = document.getElementById('map-caption-text');
+      if (mapFrame) {
+        mapFrame.src = `https://maps.google.com/maps?saddr=${origin.query}&daddr=${destination.query}&output=embed`;
+      }
+      if (captionEl) {
+        captionEl.textContent = `Menampilkan rute Google Maps: ${origin.shortName} → ${destination.shortName}`;
+      }
     }
 
-    function initOrRefreshRouteMap() {
-      const mapEl = document.getElementById('route-map');
-      const fallbackEl = document.getElementById('map-offline-fallback');
-      if (!mapEl) return;
-
-      if (typeof L === 'undefined') {
-        if (fallbackEl) fallbackEl.classList.remove('hidden');
-        return;
+    function focusLocationOnMap(lat, lng, name) {
+      const mapFrame = document.getElementById('route-map-frame');
+      const captionEl = document.getElementById('map-caption-text');
+      if (mapFrame) {
+        mapFrame.src = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+        mapFrame.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-
-      if (fallbackEl) fallbackEl.classList.add('hidden');
-
-      const { origin, destination } = getActiveRouteNodes();
-
-      try {
-        if (!leafletMap) {
-          leafletMap = L.map('route-map', {
-            zoomControl: true,
-            scrollWheelZoom: false
-          }).setView([(origin.lat + destination.lat) / 2, (origin.lng + destination.lng) / 2], 11);
-
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; OpenStreetMap contributors'
-          }).addTo(leafletMap);
-
-          routeLayerGroup = L.layerGroup().addTo(leafletMap);
-        }
-
-        routeLayerGroup.clearLayers();
-
-        // Titik perantara koridor jalan lintas Manyak Payed - Rantau - Langsa
-        const waypoints = origin.id === 'home'
-          ? [
-              [ROUTE_NODES.home.lat, ROUTE_NODES.home.lng],
-              [4.3180, 98.0280],
-              [4.3820, 98.0010],
-              [4.4320, 97.9790],
-              [ROUTE_NODES.campus.lat, ROUTE_NODES.campus.lng]
-            ]
-          : [
-              [ROUTE_NODES.campus.lat, ROUTE_NODES.campus.lng],
-              [4.4320, 97.9790],
-              [4.3820, 98.0010],
-              [4.3180, 98.0280],
-              [ROUTE_NODES.home.lat, ROUTE_NODES.home.lng]
-            ];
-
-        // Garis rute utama
-        const routeLine = L.polyline(waypoints, {
-          color: '#5b5bff',
-          weight: 5,
-          opacity: 0.92
-        }).addTo(routeLayerGroup);
-
-        // Garis putus-putus aksen
-        L.polyline(waypoints, {
-          color: '#ffd23f',
-          weight: 2,
-          dashArray: '8, 10',
-          opacity: 0.95
-        }).addTo(routeLayerGroup);
-
-        // Marker Rumah
-        L.circleMarker([ROUTE_NODES.home.lat, ROUTE_NODES.home.lng], {
-          radius: 9,
-          fillColor: '#3bceac',
-          color: '#14122b',
-          weight: 3,
-          fillOpacity: 1
-        }).addTo(routeLayerGroup).bindPopup(`<strong>${ROUTE_NODES.home.shortName}</strong><br>${ROUTE_NODES.home.label}`);
-
-        // Marker Kampus UNSAM
-        L.circleMarker([ROUTE_NODES.campus.lat, ROUTE_NODES.campus.lng], {
-          radius: 9,
-          fillColor: '#ffd23f',
-          color: '#14122b',
-          weight: 3,
-          fillOpacity: 1
-        }).addTo(routeLayerGroup).bindPopup(`<strong>${ROUTE_NODES.campus.shortName}</strong><br>${ROUTE_NODES.campus.label}`);
-
-        // Marker Riwayat GPS tersimpan (maks 8 titik terbaru)
-        (appState.locations || []).slice(0, 8).forEach(loc => {
-          if (typeof loc.lat === 'number' && typeof loc.lng === 'number') {
-            L.circleMarker([loc.lat, loc.lng], {
-              radius: 6,
-              fillColor: '#ff6b6b',
-              color: '#14122b',
-              weight: 2,
-              fillOpacity: 0.95
-            }).addTo(routeLayerGroup).bindPopup(`<strong>${loc.name}</strong><br><small>${loc.timestamp || ''}</small>`);
-          }
-        });
-
-        leafletMap.fitBounds(routeLine.getBounds(), { padding: [32, 32] });
-        leafletMap.invalidateSize();
-      } catch (err) {
-        if (fallbackEl) fallbackEl.classList.remove('hidden');
+      if (captionEl) {
+        captionEl.textContent = `Menampilkan titik lokasi: ${name} (${lat}, ${lng})`;
       }
+      showToast(`Peta diarahkan ke "${name}"`, 'info');
     }
 
     function setLocationPreset(name) {
@@ -2797,7 +2611,7 @@
           appState.locations.unshift(entry);
           saveState();
           renderLocations();
-          syncRouteUIAndMap();
+          focusLocationOnMap(lat, lng, entry.name);
           document.getElementById('loc-name').value = '';
           document.getElementById('loc-note').value = '';
           btn.disabled = false;
@@ -2806,7 +2620,7 @@
         },
         () => {
           btn.disabled = false;
-          statusEl.textContent = 'Gagal membaca GPS. Pastikan izin lokasi diaktifkan di Chrome.';
+          statusEl.textContent = 'Gagal membaca GPS. Pastikan izin lokasi diaktifkan.';
           showToast('Izin GPS ditolak atau sinyal lokasi tidak tersedia.', 'error');
         },
         { enableHighAccuracy: true, timeout: 10000 }
@@ -2829,6 +2643,7 @@
 
       listEl.innerHTML = appState.locations.map(loc => {
         const mapsUrl = `https://www.google.com/maps?q=${loc.lat},${loc.lng}`;
+        const safeName = String(loc.name).replace(/'/g, "\\'");
         return `
           <div class="p-4 brutal-inset flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="flex items-start gap-3">
@@ -2845,7 +2660,11 @@
                 </div>
               </div>
             </div>
-            <div class="flex items-center gap-2 self-end sm:self-center">
+            <div class="flex flex-wrap items-center gap-2 self-end sm:self-center">
+              <button type="button" onclick="focusLocationOnMap(${loc.lat}, ${loc.lng}, '${safeName}')"
+                      class="brutal-btn-mint px-3 py-1.5 text-xs">
+                <i class="fa-solid fa-map-location-dot mr-1"></i> Lihat di Peta
+              </button>
               <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer"
                  class="brutal-btn-blue px-3 py-1.5 text-xs">
                 Google Maps <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
@@ -2863,7 +2682,6 @@
       appState.locations = appState.locations.filter(l => l.id !== id);
       saveState();
       renderLocations();
-      syncRouteUIAndMap();
       showToast('Riwayat lokasi dihapus.', 'info');
     }
 
@@ -2996,6 +2814,9 @@
         .filter(ev => ev.date >= todayISO)
         .sort((a, b) => `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`));
 
+      const dashNextEl = document.getElementById('dash-next-event');
+      dashNextEl.textContent = upcoming.length > 0 ? `${upcoming[0].title} (${upcoming[0].time})` : 'Belum ada agenda mendatang';
+
       const listEl = document.getElementById('dash-upcoming-events');
       if (upcoming.length === 0) {
         listEl.innerHTML = `<p class="text-xs text-muted-brutal py-4 text-center brutal-inset font-medium">Belum ada agenda penting terdaftar.</p>`;
@@ -3043,18 +2864,7 @@
       reader.onload = (e) => {
         try {
           const imported = JSON.parse(e.target.result);
-          appState = {
-            ...JSON.parse(JSON.stringify(DEFAULT_STATE)),
-            ...imported,
-            walletNames: {
-              ...DEFAULT_STATE.walletNames,
-              ...(imported.walletNames || {})
-            },
-            routeConfig: {
-              ...DEFAULT_STATE.routeConfig,
-              ...(imported.routeConfig || {})
-            }
-          };
+          appState = { ...JSON.parse(JSON.stringify(DEFAULT_STATE)), ...imported };
           saveState();
           initApp();
           showToast('Data My Life berhasil dipulihkan dari backup!', 'success');
@@ -3066,7 +2876,7 @@
     }
 
     function confirmResetAllData() {
-      showConfirm('Reset Semua Data', 'Semua catatan keuangan 2 dompet, rute/riwayat lokasi, dan agenda kustom akan dikembalikan ke default. Lanjutkan?', () => {
+      showConfirm('Reset Semua Data', 'Semua catatan keuangan, riwayat lokasi, dan agenda kustom akan dikembalikan ke default. Lanjutkan?', () => {
         localStorage.removeItem(STORAGE_KEY);
         appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
         saveState();
@@ -3079,15 +2889,14 @@
     // 10. INITIALIZATION
     // =========================================================================
     function initApp() {
-      hydrateBrandLogos();
       initTheme();
       document.getElementById('saikostore-note').value = appState.saikostoreNote || '';
       updateNotifButtonUI();
       renderCourses();
       renderFinance();
       renderWorkout();
-      renderLocations();
       syncRouteUIAndMap();
+      renderLocations();
       renderCalendar();
       updateClockAndReminders();
     }
