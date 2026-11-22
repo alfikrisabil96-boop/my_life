@@ -7,6 +7,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="My Life" />
+  <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+  <link rel="apple-touch-icon" href="./logo.svg" />
+  <link rel="manifest" href="./manifest.json" />
   <title>My Life — Personal Command Center</title>
   <!-- Google Fonts: Bricolage Grotesque, Instrument Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -368,12 +371,15 @@
   <aside class="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 z-30 border-r-[3px] border-[var(--line)]" style="background-color:var(--surface);">
     <div class="p-5 border-b-[3px] border-[var(--line)]">
       <div class="flex items-center gap-3">
-        <div class="w-11 h-11 rounded-xl flex items-center justify-center font-display font-extrabold text-lg border-[3px] border-[var(--line)] text-white" style="background-color:var(--blue);box-shadow:3px 3px 0 var(--sh);">
-          ML.
-        </div>
+        <img
+          src="./logo.svg"
+          alt="Logo My Life"
+          class="w-11 h-11 rounded-xl object-cover border-[3px] border-[var(--line)] shrink-0"
+          style="box-shadow:3px 3px 0 var(--sh);"
+        />
         <div>
           <h1 class="text-xl font-extrabold tracking-tight leading-none">
-            My Life <span class="text-xs font-mono px-1.5 py-0.5 rounded border-2 border-[var(--line)]" style="background:var(--yellow);color:#14122b;">v3.0</span>
+            My Life <span class="text-xs font-mono px-1.5 py-0.5 rounded border-2 border-[var(--line)]" style="background:var(--yellow);color:#14122b;">ML.</span>
           </h1>
           <p class="text-xs text-muted-brutal mt-1 font-medium">Personal Command Center</p>
         </div>
@@ -450,9 +456,12 @@
       <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
         <!-- Mobile Brand -->
         <div class="flex items-center gap-2.5 lg:hidden">
-          <div class="w-9 h-9 rounded-xl flex items-center justify-center font-display font-extrabold text-sm border-[2.5px] border-[var(--line)] text-white" style="background-color:var(--blue);box-shadow:2px 2px 0 var(--sh);">
-            ML.
-          </div>
+          <img
+            src="./logo.svg"
+            alt="Logo My Life"
+            class="w-9 h-9 rounded-xl object-cover border-[2.5px] border-[var(--line)] shrink-0"
+            style="box-shadow:2px 2px 0 var(--sh);"
+          />
           <div>
             <h1 class="text-base font-extrabold leading-tight">My Life</h1>
             <p class="text-[11px] text-muted-brutal font-medium">Sabil Alfikri • IF UNSAM</p>
@@ -1397,7 +1406,6 @@
       };
     }
 
-    // Soft Harmonic Chime Sound (Web Audio API - tanpa beep kasar)
     function playNotificationSound() {
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -1405,10 +1413,10 @@
         const now = ctx.currentTime;
 
         const notes = [
-          { freq: 523.25, start: 0.00, duration: 0.85, gain: 0.11 }, // C5
-          { freq: 659.25, start: 0.09, duration: 0.90, gain: 0.10 }, // E5
-          { freq: 783.99, start: 0.18, duration: 0.95, gain: 0.09 }, // G5
-          { freq: 987.77, start: 0.27, duration: 1.25, gain: 0.08 }  // B5
+          { freq: 523.25, start: 0.00, duration: 0.85, gain: 0.11 },
+          { freq: 659.25, start: 0.09, duration: 0.90, gain: 0.10 },
+          { freq: 783.99, start: 0.18, duration: 0.95, gain: 0.09 },
+          { freq: 987.77, start: 0.27, duration: 1.25, gain: 0.08 }
         ];
 
         notes.forEach(note => {
@@ -1438,9 +1446,7 @@
           oscSine.stop(now + note.start + note.duration + 0.05);
           oscTri.stop(now + note.start + note.duration + 0.05);
         });
-      } catch (e) {
-        // Ignore audio policy block if user hasn't interacted yet
-      }
+      } catch (e) {}
     }
 
     // =========================================================================
@@ -1529,7 +1535,7 @@
     }
 
     // =========================================================================
-    // HP ALARM & REMINDER HELPER MODAL + PWA MANIFEST
+    // HP ALARM & REMINDER HELPER MODAL + PWA SERVICE WORKER
     // =========================================================================
     function getNextDateForDay(dayName) {
       const targetIdx = HARI_LIST.indexOf(dayName);
@@ -1569,15 +1575,12 @@
       document.getElementById('alarm-modal-date').textContent = `${dayLabel} (${dateISO})`;
       document.getElementById('alarm-modal-time').textContent = `${timeStr || '08:00'} WIB`;
 
-      // a) Android Clock Intent
       const androidIntentUrl = `intent://alarm#Intent;scheme=android.intent.action.SET_ALARM;S.android.intent.extra.alarm.MESSAGE=${encodeURIComponent(safeTitle)};i.android.intent.extra.alarm.HOUR=${hh || 8};i.android.intent.extra.alarm.MINUTES=${mm || 0};end`;
       document.getElementById('alarm-android-btn').href = androidIntentUrl;
 
-      // b) Google Calendar URL
       const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(safeTitle)}&dates=${startICS}/${endICS}&details=${encodeURIComponent(safeDetails)}`;
       document.getElementById('alarm-gcal-btn').href = gcalUrl;
 
-      // c) Download .ics with 15-minute and 0-minute VALARM triggers
       document.getElementById('alarm-ics-btn').onclick = () => {
         const icsContent = [
           'BEGIN:VCALENDAR',
@@ -1614,7 +1617,6 @@
         showToast('File kalender (.ics) dengan alarm 15 menit & tepat waktu berhasil diunduh!', 'success');
       };
 
-      // d) Copy Reminder Details
       document.getElementById('alarm-copy-btn').onclick = () => {
         const copyText = `⏰ Pengingat My Life\nJudul: ${safeTitle}\nWaktu: ${dayLabel}, ${dateISO} pukul ${timeStr || '08:00'} WIB\nInfo: ${safeDetails}`;
         const textarea = document.createElement('textarea');
@@ -1706,34 +1708,14 @@
       });
     }
 
-    function injectPWAManifest() {
-      try {
-        const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#5b5bff"/><rect x="24" y="24" width="464" height="464" rx="92" fill="none" stroke="#f4f3ff" stroke-width="24"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="800" font-size="210">ML.</text></svg>`;
-        const iconUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgIcon);
-        const manifest = {
-          name: 'My Life',
-          short_name: 'My Life',
-          description: 'Personal Command Center untuk Sabil Alfikri',
-          start_url: '.',
-          display: 'standalone',
-          background_color: '#12111f',
-          theme_color: '#5b5bff',
-          icons: [
-            {
-              src: iconUrl,
-              sizes: '512x512',
-              type: 'image/svg+xml',
-              purpose: 'any maskable'
-            }
-          ]
-        };
-        const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-        const manifestUrl = URL.createObjectURL(blob);
-        const link = document.createElement('link');
-        link.rel = 'manifest';
-        link.href = manifestUrl;
-        document.head.appendChild(link);
-      } catch (e) {}
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch((err) => {
+            console.log('Service Worker gagal didaftarkan:', err);
+          });
+        });
+      }
     }
 
     function checkSmartNotifications(now) {
@@ -2477,7 +2459,7 @@
     // =========================================================================
     // 9. SAIKOSTORE NOTE & BACKUP / RESTORE JSON
     // =========================================================================
-    function saveStoreNote() {
+    function saveSaikostoreNote() {
       appState.saikostoreNote = document.getElementById('saikostore-note').value;
       saveState();
       showToast('Catatan bisnis Saikostore tersimpan!', 'success');
@@ -2528,7 +2510,6 @@
     // =========================================================================
     function initApp() {
       initTheme();
-      injectPWAManifest();
       document.getElementById('saikostore-note').value = appState.saikostoreNote || '';
       updateNotifButtonUI();
       renderCourses();
@@ -2538,6 +2519,8 @@
       renderCalendar();
       updateClockAndReminders();
     }
+
+    registerServiceWorker();
 
     window.addEventListener('DOMContentLoaded', () => {
       switchTab('dashboard');
