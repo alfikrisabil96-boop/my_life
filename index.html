@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0B7A75"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="My Life"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<title>My Life</title>
+<meta name="theme-color" content="#0A2540"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="My Life"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<title>My Life</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -133,19 +133,41 @@ nav i{top:0;right:calc(50% - 24px)}
 .pinI.fx{width:20px;height:20px;background:#7A8797}
 #toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom,0px));transform:translate(-50%,16px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.3s;z-index:60;max-width:90%;text-align:center}
 #toast.on{opacity:1;transform:translate(-50%,0)}
-#splash{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:24px;text-align:center;background:radial-gradient(circle at 50% 38%,#13A89E 0,#0B5E70 55%,#0A2540 100%);color:#fff;transition:opacity .55s ease,transform .55s ease,visibility .55s}
-#splash.gone{opacity:0;transform:scale(1.02);visibility:hidden;pointer-events:none}
-#spLogo{width:124px;height:124px;animation:pop .85s cubic-bezier(.2,1.15,.3,1) both;filter:drop-shadow(0 18px 40px rgba(0,0,0,.35))}
+#splash{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:24px;text-align:center;overflow:hidden;background:radial-gradient(circle at 50% 42%,#0E3A5C 0,#0A2540 55%,#061424 100%);color:#fff;transition:opacity .6s ease,transform .6s ease,visibility .6s}
+#splash.gone{opacity:0;transform:scale(1.06);visibility:hidden;pointer-events:none}
+#splash::before,#splash::after{content:'';position:absolute;width:75vmax;height:75vmax;border-radius:50%;filter:blur(70px);opacity:.5;animation:spAur 6s ease-in-out infinite alternate}
+#splash::before{background:radial-gradient(circle,#13A89E,transparent 65%);left:-30vmax;top:-25vmax}
+#splash::after{background:radial-gradient(circle,#1F5FD6,transparent 65%);right:-30vmax;bottom:-30vmax;animation-delay:-3s}
+#splash>*{position:relative;z-index:1}
+#spHint{position:absolute!important;left:0;right:0;bottom:calc(34px + env(safe-area-inset-bottom,0px));font-size:12px;letter-spacing:.14em;font-weight:600;opacity:.8;animation:spHint 1.4s ease-in-out infinite alternate}
+@keyframes spHint{from{opacity:.25}to{opacity:.85}}
+#spDots{position:absolute!important;inset:0;z-index:0!important;pointer-events:none}
+#spDots u{position:absolute;bottom:-12px;border-radius:50%;background:rgba(255,255,255,.6);animation:spRise linear infinite}
+#spWrap{position:relative;width:148px;height:148px;display:grid;place-items:center;transition:transform .6s cubic-bezier(.5,0,.2,1)}
+#splash.gone #spWrap{transform:scale(1.35)}
+#spWrap::before{content:'';position:absolute;inset:-46px;border-radius:50%;background:radial-gradient(circle,rgba(25,195,181,.55),transparent 66%);animation:spGlow 2.4s ease-in-out infinite alternate}
+#spWrap .ring{position:absolute;inset:0;border-radius:32%;border:2px solid rgba(255,255,255,.6);opacity:0;animation:spRing 1.5s 1.55s cubic-bezier(.2,.6,.3,1) forwards}
+#spWrap .ring.r2{animation-delay:1.8s;border-color:rgba(255,200,87,.6)}
+#spLogo{position:relative;width:148px;height:148px;border-radius:22%;overflow:hidden;animation:spPop 1s cubic-bezier(.2,1.25,.3,1) both;box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.12)}
+#spLogo::after{content:'';position:absolute;top:-20%;bottom:-20%;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);animation:spShine 1s 2s ease-out both}
 #spLogo svg{width:100%;height:100%;display:block}
-#splash .lg-arc{stroke-dasharray:825;stroke-dashoffset:825;animation:draw 1s .3s ease forwards}
-#splash .lg-ck{stroke-dasharray:200;stroke-dashoffset:200;animation:draw .5s 1s ease forwards}
-#splash .lg-dot{transform-box:fill-box;transform-origin:center;animation:popDot .45s 1.25s cubic-bezier(.2,1.3,.3,1) both}
-#splash b{font-size:30px;font-weight:800;letter-spacing:-.03em;margin-top:14px;animation:up .65s .65s both}
-#splash small{opacity:.85;font-size:13px;animation:up .65s .85s both}
-@keyframes pop{from{opacity:0;transform:scale(.6) rotate(-10deg)}to{opacity:1;transform:none}}
-@keyframes popDot{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
-@keyframes draw{to{stroke-dashoffset:0}}
-@media(prefers-reduced-motion:reduce){#splash .lg-arc,#splash .lg-ck{stroke-dashoffset:0}}
+#splash .lg-arc{stroke-dasharray:760;stroke-dashoffset:760;animation:spDraw 1.1s .5s cubic-bezier(.5,0,.2,1) forwards}
+#splash .lg-ck{stroke-dasharray:480;stroke-dashoffset:480;animation:spDraw .7s 1.15s ease-out forwards}
+#splash .lg-dot{transform-box:fill-box;transform-origin:center;animation:spDot .6s 1.55s cubic-bezier(.2,1.6,.3,1) both}
+#splash b{font-size:34px;font-weight:800;letter-spacing:-.03em;margin-top:22px;text-shadow:0 4px 30px rgba(19,168,158,.6)}
+#splash b span{display:inline-block;animation:spLet .75s var(--d,1s) cubic-bezier(.2,.9,.3,1) both}
+#splash small{opacity:.85;font-size:12.5px;letter-spacing:.16em;font-weight:600;text-transform:none;animation:spSub 1.1s 1.5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes spPop{0%{opacity:0;transform:scale(.3) rotate(-22deg)}60%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes spDraw{to{stroke-dashoffset:0}}
+@keyframes spDot{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+@keyframes spRing{0%{opacity:.9;transform:scale(.9)}100%{opacity:0;transform:scale(2.2)}}
+@keyframes spShine{from{left:-60%}to{left:140%}}
+@keyframes spGlow{from{opacity:.5;transform:scale(.9)}to{opacity:1;transform:scale(1.1)}}
+@keyframes spLet{from{opacity:0;transform:translateY(30px) scale(.7);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+@keyframes spSub{from{opacity:0;letter-spacing:.55em}to{opacity:.85;letter-spacing:.16em}}
+@keyframes spAur{to{transform:translate(9vmax,7vmax) scale(1.2)}}
+@keyframes spRise{0%{opacity:0;transform:translateY(0)}15%{opacity:.8}100%{opacity:0;transform:translateY(-105vh)}}
+@media(prefers-reduced-motion:reduce){#splash *,#splash::before,#splash::after{animation:none!important}#splash .lg-arc,#splash .lg-ck{stroke-dashoffset:0}#spWrap .ring{display:none}}
 
 .abs{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-color:var(--sun);background:linear-gradient(120deg,rgba(242,165,22,.14),transparent 70%),var(--card)}
 .abs[hidden]{display:none}
@@ -172,10 +194,22 @@ nav i{top:0;right:calc(50% - 24px)}
 .tb.pz{background:rgba(242,165,22,.16);color:var(--sun);border-color:var(--sun)}
 .tb.rs{background:transparent;color:var(--rose);border-color:var(--rose)}
 .big.run{color:var(--pri)}
+
+.credit{text-align:center;margin:26px 0 0;color:var(--mut);font-size:12px;line-height:1.3}.credit b{display:block;color:var(--ink);font-size:14px;font-weight:800;letter-spacing:-.01em}.credit span{letter-spacing:.1em;font-weight:600}
+.dpick{display:flex;gap:6px;flex-wrap:wrap}
+.dchip{min-width:46px;padding:8px 11px;border-radius:99px;border:1px solid var(--line);background:var(--bg);color:var(--mut);font:700 12.5px inherit;font-family:inherit;cursor:pointer;transition:.15s}
+.dchip.on{background:var(--pri);border-color:var(--pri);color:var(--pri-ink)}
+.dbox{margin:-4px 0 6px}.dbox .hint{display:block;margin:0 2px 8px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:14px 0 6px}
+.week>div{text-align:center;padding:8px 2px;border-radius:12px;border:1px solid var(--line);color:var(--mut)}
+.week small{display:block;font-size:11px;font-weight:600}.week b{display:block;font-size:15px;color:var(--ink);line-height:1.5}
+.week .now{border-color:var(--pri);background:var(--soft)}.week .rest b{color:var(--mut);font-weight:600;font-size:11px;line-height:2}
+.srow{padding:13px 0;border-top:1px solid var(--line)}.srow>b{display:block;margin-bottom:9px;font-size:14px}
+.empty.rest b{display:block;color:var(--ink);font-size:16px;margin-bottom:2px}
 </style>
 </head>
 <body>
-<div id="splash"><div id="spLogo"></div><b>My Life</b><small>Sabil OS · hidup lebih terarah</small></div><div id="toast" role="status"></div>
+<div id="splash"><div id="spDots"></div><div id="spWrap"><i class="ring"></i><i class="ring r2"></i><div id="spLogo"></div></div><b id="spT">My Life</b><small>Producing by Sabil</small></div><div id="toast" role="status"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
 <symbol id="i-cap" viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></symbol>
@@ -235,8 +269,8 @@ nav i{top:0;right:calc(50% - 24px)}
 <section id="v-kuliah" class="view">
   <div class="head"><h3>Jadwal & absen kuliah</h3><a class="go" href="https://mahasiswa.unsam.ac.id/" target="_blank" rel="noopener">Buka portal UNSAM</a></div>
   <div class="card"><div class="head" style="margin-bottom:6px"><div><h3>Pengingat absen</h3><p class="hint" id="ntInfo"></p></div></div>
-    <div class="btns"><button class="btn" id="ntBtn" onclick="ntMain()">Aktifkan notifikasi</button><button class="btn ghost" onclick="ntTest()">notifikasi</button><button class="btn ghost" onclick="exportICS()">alarm</button></div>
-    <p class="hint" style="margin-top:10px">Pengingat berjalan selama aplikasi masih terbuka di Chrome. Untuk notifikasi bertombol "Absen sekarang" di HP, taruh file sw.js satu folder dengan index.html saat di-upload. Ekspor ke kalender membuat alarm tetap bunyi walau aplikasi ditutup.</p></div>
+    <div class="btns"><button class="btn" id="ntBtn" onclick="ntMain()">Aktifkan notifikasi</button><button class="btn ghost" onclick="ntTest()">notifikasi</button><button class="btn ghost" id="sndBtn" onclick="sndToggle()">Suara: nyala</button><button class="btn ghost" onclick="exportICS()">alarm</button></div>
+    <p class="hint" style="margin-top:10px">Pengingat berjalan selama aplikasi masih terbuka di Chrome. Untuk notifikasi bertombol "Absen sekarang" dan ikon aplikasi tanpa logo Chrome di HP, upload semua file (index.html, sw.js, manifest.webmanifest, folder icons) dalam satu folder lewat alamat https. Ekspor ke kalender membuat alarm tetap bunyi walau aplikasi ditutup.</p></div>
   <div id="courseList"></div>
   <div class="card"><h3 style="margin-bottom:12px">Tambah mata kuliah</h3>
   <form class="add" onsubmit="addCourse(event)">
@@ -285,9 +319,11 @@ nav i{top:0;right:calc(50% - 24px)}
   <div>
     <div class="head"><h3>Latihan & nutrisi hari ini</h3><button class="link" onclick="toggleEdit()">Atur</button></div>
     <div id="gymTodo"></div>
-    <form class="add" onsubmit="addHabit(event,'gIn',$('gCat').value)"><select id="gCat" style="flex:0 0 auto"><option value="olahraga">Latihan</option><option value="nutrisi">Nutrisi</option></select><input id="gIn" required placeholder="mis. Pull-up 3x8 atau Makan telur 3 butir"><button class="btn">Tambah</button></form>
+    <form class="add" onsubmit="addGym(event)"><select id="gCat" style="flex:0 0 auto" onchange="gCatChg()"><option value="olahraga">Latihan</option><option value="nutrisi">Nutrisi</option></select><input id="gIn" required placeholder="mis. Pull-up 3x8 atau Makan telur 3 butir"><button class="btn">Tambah</button></form>
+    <div class="dbox" id="gDaysBox"><small class="hint">Latihan di hari:</small><div class="dpick" id="gDays"></div></div>
     <details class="done" style="margin-top:14px"><summary id="gDoneSum"></summary><div id="gDone"></div></details>
   </div>
+  <div class="card" id="gSched"></div>
 </section>
 
 <section id="v-rute" class="view">
@@ -320,6 +356,7 @@ nav i{top:0;right:calc(50% - 24px)}
   <div class="card"><h3>Data, tema & cadangan</h3><p class="hint" style="margin:6px 0 14px">Data tersimpan di browser ini. Pasang sebagai aplikasi: buka lewat alamat https (mis. upload ke Netlify), lalu di Chrome HP pilih menu ⋮ → Install app / Tambahkan ke layar utama. GPS juga hanya jalan lewat https.</p>
   <div class="btns"><button class="btn" onclick="exportData()">Unduh cadangan</button><label class="btn ghost">Pulihkan cadangan<input type="file" accept=".json" onchange="importData(event)" hidden></label><button class="btn" id="instBtn" onclick="installApp()" hidden>Pasang di HP</button><button class="btn ghost" onclick="toggleTheme()">Ganti tema</button><button class="btn warn" onclick="resetAll()">Reset semua data</button></div></div>
 </section>
+<p class="credit"><b>My Life</b><span>Producing by Sabil</span></p>
 </div>
 
 <nav aria-label="Menu utama">
@@ -375,13 +412,16 @@ function show(v){document.querySelectorAll('.view').forEach(e=>e.classList.toggl
   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));scrollTo({top:0});enter(v);if(v==='rute')setTimeout(()=>{initMap();map&&map.invalidateSize()},80)}
 
 /* ---------- target harian (hilang saat dicentang, muncul lagi besok) ---------- */
+const DS=['Min','Sen','Sel','Rab','Kam','Jum','Sab'],ORD=[1,2,3,4,5,6,0],ALLD=[0,1,2,3,4,5,6];
+const hDays=h=>Array.isArray(h.days)&&h.days.length?h.days:ALLD;
+const isDue=(h,d=new Date().getDay())=>h.cat!=='olahraga'||hDays(h).includes(d);
 const CAT={olahraga:'Latihan',nutrisi:'Nutrisi'};
-const rec=h=>({k:'h',id:h.id,text:h.text,tag:CAT[h.cat]||'',link:h.link||''});
+const rec=h=>({k:'h',id:h.id,text:h.text,tag:(CAT[h.cat]||'')+(h.cat==='olahraga'&&hDays(h).length<7?' · '+ORD.filter(d=>hDays(h).includes(d)).map(d=>DS[d]).join(', '):''),link:h.link||''});
 function todayItems(){
   const T=iso(),dn=HARI[new Date().getDay()],todo=[],done=[];
   S.courses.filter(c=>c.day===dn).sort((a,b)=>a.time.localeCompare(b.time)).forEach(c=>
     (c.attendedDate===T?done:todo).push({k:'c',id:c.id,text:'Absen '+c.name,tag:c.time+' WIB'+(c.room?' · '+c.room:''),link:PORTAL}));
-  S.daily.forEach(h=>(h.doneDate===T?done:todo).push(rec(h)));
+  S.daily.filter(h=>isDue(h)).forEach(h=>(h.doneDate===T?done:todo).push(rec(h)));
   return{todo,done};
 }
 function rowHTML(r,isDone){
@@ -416,7 +456,7 @@ function viewToday(){
   $('sAbs').textContent=ta+' / '+tc.length+' matkul';
   const nc=tc.filter(c=>c.attendedDate!==T).sort((a,b)=>a.time.localeCompare(b.time))[0];
   $('sAbsS').textContent=nc?nc.name+' ('+nc.time+')':tc.length?'Semua absen selesai':'Tidak ada kuliah hari ini';
-  const gy=S.daily.filter(x=>x.cat==='olahraga'||x.cat==='nutrisi'),gd=gy.filter(x=>x.doneDate===T).length;
+  const gy=S.daily.filter(x=>(x.cat==='olahraga'||x.cat==='nutrisi')&&isDue(x)),gd=gy.filter(x=>x.doneDate===T).length;
   $('sGym').textContent=(gy.length?Math.round(gd/gy.length*100):0)+'% selesai';
   $('sGymS').textContent='Berat '+Number(S.weight).toFixed(1)+' kg → 60 kg';
   $('sAg').textContent=nx?nx.title:'Belum ada';$('sAgS').textContent=nx?nx.date+' · '+nx.time:'Tambah di tab Agenda';
@@ -469,16 +509,37 @@ function beep(){try{const c=new(window.AudioContext||window.webkitAudioContext)(
 function startT(){
   if(tInt)return;if(tSec<=0)tSec=tLen;tEnd=Date.now()+tSec*1000;
   tInt=setInterval(()=>{tSec=Math.max(0,Math.ceil((tEnd-Date.now())/1000));
-    if(tSec<=0){clearInterval(tInt);tInt=null;beep();if(navigator.vibrate)navigator.vibrate([300,150,300]);toast('Waktu habis!')}setTBtn()},250);
+    if(tSec<=0){clearInterval(tInt);tInt=null;notifSound();if(navigator.vibrate)navigator.vibrate([300,150,300]);toast('Waktu habis!')}setTBtn()},250);
   setTBtn();
 }
 function setWeight(e){e.preventDefault();const v=parseFloat($('wIn').value);if(v<30||v>150)return;S.weight=v;$('wIn').value='';save();render()}
 function viewGym(){
-  const T=iso(),g=S.daily.filter(h=>h.cat==='olahraga'||h.cat==='nutrisi'),p=g.filter(h=>h.doneDate!==T),d=g.filter(h=>h.doneDate===T);
-  $('gymTodo').innerHTML=p.length?p.map(h=>rowHTML(rec(h),false)).join(''):`<div class="empty"><b>${g.length?'Latihan & nutrisi hari ini beres.':'Belum ada daftar.'}</b>${g.length?'Muncul lagi besok.':'Tambahkan di bawah.'}</div>`;
+  const T=iso(),td=new Date().getDay(),g=S.daily.filter(h=>(h.cat==='olahraga'||h.cat==='nutrisi')&&isDue(h)),p=g.filter(h=>h.doneDate!==T),d=g.filter(h=>h.doneDate===T);
+  const ol=S.daily.filter(h=>h.cat==='olahraga');let rest='';
+  if(ol.length&&!ol.some(h=>isDue(h))){let nx='';for(let k=1;k<=7;k++){const x=(td+k)%7;if(ol.some(h=>hDays(h).includes(x))){nx=HARI[x];break}}
+    rest=`<div class="empty rest"><b>Hari istirahat</b>Otot tumbuh saat istirahat, bukan saat latihan.${nx?' Latihan berikutnya: '+nx+'.':''}</div>`}
+  $('gymTodo').innerHTML=rest+(p.length?p.map(h=>rowHTML(rec(h),false)).join(''):`<div class="empty"><b>${g.length?'Target hari ini beres.':(rest?'Tidak ada nutrisi hari ini.':'Belum ada daftar.')}</b>${g.length?'Muncul lagi besok.':'Tambahkan di bawah.'}</div>`);
   $('gDoneSum').textContent='Selesai hari ini ('+d.length+')';$('gDone').innerHTML=d.map(h=>rowHTML(rec(h),true)).join('');
   $('wt').textContent=Number(S.weight).toFixed(1)+' kg';
+  viewSched(ol,td);
 }
+function viewSched(ol,td){
+  const week=ORD.map(d=>{const n=ol.filter(h=>hDays(h).includes(d)).length;return `<div class="${d===td?'now':''}${n?'':' rest'}"><small>${DS[d]}</small><b>${n||'Rest'}</b></div>`}).join('');
+  $('gSched').innerHTML=`<h3>Jadwal latihan mingguan</h3><p class="hint">Ketuk hari untuk menyalakan atau mematikan. Hari tanpa latihan jadi hari istirahat.</p><div class="week">${week}</div>`+
+   (ol.length?ol.map(h=>`<div class="srow"><b>${esc(h.text)}</b><div class="dpick">${ORD.map(d=>`<button type="button" class="dchip${hDays(h).includes(d)?' on':''}" onclick="togDay(${h.id},${d})">${DS[d]}</button>`).join('')}</div></div>`).join(''):'<div class="empty" style="margin-top:10px">Belum ada latihan. Tambahkan di atas.</div>');
+}
+function togDay(id,d){const h=S.daily.find(x=>x.id===id);if(!h)return;const a=hDays(h).slice(),i=a.indexOf(d);
+  if(i>=0)a.splice(i,1);else a.push(d);
+  if(!a.length){toast('Minimal 1 hari. Hapus latihan lewat tombol Atur kalau tidak dipakai.');return}
+  h.days=a.sort((x,y)=>x-y);save();render()}
+let gSel=new Set([1,3,5]);
+function gChips(){$('gDays').innerHTML=ORD.map(d=>`<button type="button" class="dchip${gSel.has(d)?' on':''}" onclick="gTog(${d})">${DS[d]}</button>`).join('')}
+function gTog(d){if(gSel.has(d))gSel.delete(d);else gSel.add(d);gChips()}
+function gCatChg(){$('gDaysBox').style.display=$('gCat').value==='olahraga'?'':'none'}
+function addGym(e){e.preventDefault();const cat=$('gCat').value;
+  if(cat==='olahraga'&&!gSel.size){toast('Pilih minimal 1 hari latihan');return}
+  const i=$('gIn');S.daily.push({id:uid(),text:i.value.trim(),cat,doneDate:'',link:'',...(cat==='olahraga'?{days:[...gSel].sort((a,b)=>a-b)}:{})});
+  i.value='';save();render();toast(cat==='olahraga'?'Latihan ditambahkan ke jadwal':'Nutrisi ditambahkan')}
 
 /* ---------- lokasi langsung & GPS ---------- */
 const km=(a,b,c,d)=>{const r=x=>x*Math.PI/180,x=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return 12742*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))};
@@ -607,6 +668,7 @@ function viewAbsen(){
     $('absDone').onclick=()=>markAbsen(x.c.id);}
   const sup='Notification' in window,pm=sup?Notification.permission:'none';
   $('ntInfo').textContent=!sup?'Browser ini tidak mendukung notifikasi. Banner di Home tetap muncul.':pm==='denied'?'Notifikasi diblokir. Aktifkan lewat ikon gembok atau pengaturan situs Chrome.':pm!=='granted'?'Belum aktif. Aktifkan agar diingatkan saat jam kuliah dimulai.':S.notifOff?'Pengingat dimatikan.':'Aktif. Kamu diingatkan saat kuliah mulai, lalu tiap 15 menit sampai absen.';
+  $('sndBtn').textContent=S.soundOff?'Suara: mati':'Suara: nyala';
   $('ntBtn').textContent=pm!=='granted'?'Aktifkan notifikasi':S.notifOff?'Nyalakan pengingat':'Matikan pengingat';
 }
 function markAbsen(id){const c=S.courses.find(x=>x.id===id);if(c){c.attendedDate=iso();save();render();toast('Absen tercatat. Mantap!')}}
@@ -618,13 +680,97 @@ async function ntMain(){
 }
 async function notify(t,b,tag){
   if(!('Notification' in window)||Notification.permission!=='granted')return false;
-  const o={body:b,tag,icon:ICON||undefined,badge:ICON||undefined,vibrate:[200,100,200],requireInteraction:true,renotify:true,data:{url:PORTAL}};
+  notifSound();
+  const o={body:b,tag,icon:ICON||undefined,badge:'icons/badge-96.png',vibrate:[200,100,200],requireInteraction:true,renotify:true,data:{url:PORTAL}};
   try{
     const reg=swReg?await Promise.race([navigator.serviceWorker.ready,new Promise(r=>setTimeout(r,1500))]):null;
     if(reg&&reg.showNotification){await reg.showNotification(t,{...o,actions:[{action:'absen',title:'Absen sekarang'},{action:'tutup',title:'Nanti'}]});return true}
     const nt=new Notification(t,o);nt.onclick=()=>{window.open(PORTAL,'_blank');nt.close()};return true;
   }catch(e){return false}
 }
+
+/* ---------- suara notifikasi ---------- */
+let AC=null;
+function ac(){try{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}catch(e){return null}}
+(()=>{const u=()=>{ac();['pointerdown','keydown','touchstart'].forEach(v=>removeEventListener(v,u))};['pointerdown','keydown','touchstart'].forEach(v=>addEventListener(v,u,{passive:true}))})();
+function notifSound(force){
+  if(S.soundOff&&!force)return;
+  const c=ac();if(!c)return;
+  const t0=c.currentTime+.03;
+  const out=c.createGain(),comp=c.createDynamicsCompressor(),dl=c.createDelay(1),fb=c.createGain(),wet=c.createGain();
+  out.gain.value=.85;dl.delayTime.value=.2;fb.gain.value=.34;wet.gain.value=.4;
+  out.connect(comp);out.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(wet);wet.connect(comp);comp.connect(c.destination);
+  /* hentakan bass */
+  const k=c.createOscillator(),kg=c.createGain();k.type='sine';
+  k.frequency.setValueAtTime(170,t0);k.frequency.exponentialRampToValueAtTime(42,t0+.2);
+  kg.gain.setValueAtTime(.9,t0);kg.gain.exponentialRampToValueAtTime(.001,t0+.3);
+  k.connect(kg);kg.connect(out);k.start(t0);k.stop(t0+.32);
+  /* arpeggio synth naik (E mayor 7) + gema */
+  [659.25,830.61,987.77,1244.5,1318.5,1661.2].forEach((f,i,a)=>{
+    const t=t0+.1+i*.075,last=i===a.length-1,d=last?1:.38;
+    const lp=c.createBiquadFilter();lp.type='lowpass';lp.Q.value=4;
+    lp.frequency.setValueAtTime(5200,t);lp.frequency.exponentialRampToValueAtTime(900,t+d);
+    const g=c.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(last?.2:.14,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+    lp.connect(g);g.connect(out);
+    [-8,8].forEach(det=>{const o=c.createOscillator();o.type='sawtooth';o.frequency.value=f;o.detune.value=det;o.connect(lp);o.start(t);o.stop(t+d+.05)});
+    const sp=c.createOscillator(),sg=c.createGain();sp.type='sine';sp.frequency.value=f*2;
+    sg.gain.setValueAtTime(.0001,t);sg.gain.exponentialRampToValueAtTime(last?.1:.05,t+.008);sg.gain.exponentialRampToValueAtTime(.0001,t+d*.8);
+    sp.connect(sg);sg.connect(out);sp.start(t);sp.stop(t+d);
+  });
+}
+
+/* ---------- suara animasi pembuka ---------- */
+function introSound(){
+  if(S.soundOff)return;
+  const c=ac();if(!c)return;
+  let done=false;
+  const go=()=>{
+    if(done)return;done=true;
+    const t0=c.currentTime+.05;
+    const master=c.createGain(),comp=c.createDynamicsCompressor(),dl=c.createDelay(1),fb=c.createGain(),wet=c.createGain();
+    master.gain.value=.9;dl.delayTime.value=.23;fb.gain.value=.38;wet.gain.value=.42;
+    master.connect(comp);master.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(wet);wet.connect(comp);comp.connect(c.destination);
+    const env=(g,t,a,pk,d)=>{g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(pk,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+d)};
+    const nb=c.createBuffer(1,c.sampleRate*2,c.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
+    const noise=(t,d,f0,f1,pk,q)=>{const sr=c.createBufferSource();sr.buffer=nb;const bp=c.createBiquadFilter();bp.type='bandpass';bp.Q.value=q;
+      bp.frequency.setValueAtTime(f0,t);bp.frequency.exponentialRampToValueAtTime(f1,t+d);const g=c.createGain();env(g,t,d*.6,pk,d);
+      sr.connect(bp);bp.connect(g);g.connect(master);sr.start(t);sr.stop(t+d+.05)};
+    const tone=(f,t,d,pk,type,cut)=>{const lp=c.createBiquadFilter();lp.type='lowpass';lp.Q.value=3;
+      lp.frequency.setValueAtTime(cut,t);lp.frequency.exponentialRampToValueAtTime(700,t+d);
+      const g=c.createGain();env(g,t,.01,pk,d);lp.connect(g);g.connect(master);
+      [-7,7].forEach(dt=>{const o=c.createOscillator();o.type=type;o.frequency.value=f;o.detune.value=dt;o.connect(lp);o.start(t);o.stop(t+d+.05)})};
+    const sine=(f,t,d,pk)=>{const o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=f;env(g,t,.006,pk,d);o.connect(g);g.connect(master);o.start(t);o.stop(t+d+.05)};
+    /* 0s: logo muncul, whoosh naik */
+    noise(t0,1.2,300,3500,.5,1.2);
+    /* 0.5s-1.6s: cincin tergambar, nada meluncur naik */
+    [[1,.16],[.5,.09]].forEach(([r,pk])=>{const o=c.createOscillator(),g=c.createGain();o.type=r===1?'sine':'triangle';
+      o.frequency.setValueAtTime(220*r,t0+.5);o.frequency.exponentialRampToValueAtTime(1320*r,t0+1.6);
+      env(g,t0+.5,.9,pk,1.15);o.connect(g);g.connect(master);o.start(t0+.5);o.stop(t0+1.7)});
+    /* 0.95s: huruf-huruf muncul, tik halus */
+    for(let i=0;i<7;i++)sine(1318.5*(1+i*.12),t0+.95+i*.07,.15,.035);
+    /* 1.15s: huruf M tergambar, tiga petikan */
+    [659.25,830.61,987.77].forEach((f,i)=>tone(f,t0+1.15+i*.17,.4,.13,'sawtooth',4000));
+    /* 1.55s: titik emas, dentuman + akor cerah */
+    const k=c.createOscillator(),kg=c.createGain();k.type='sine';
+    k.frequency.setValueAtTime(150,t0+1.55);k.frequency.exponentialRampToValueAtTime(38,t0+2.05);
+    env(kg,t0+1.55,.005,.95,.55);k.connect(kg);kg.connect(master);k.start(t0+1.55);k.stop(t0+2.15);
+    noise(t0+1.55,.35,6000,400,.35,.8);
+    [659.25,830.61,987.77,1318.5,1661.2].forEach((f,i)=>{tone(f,t0+1.57+i*.03,1.5,.1,'sawtooth',5000);sine(f*2,t0+1.57+i*.03,1.2,.03)});
+    tone(329.63,t0+1.55,1.6,.07,'sawtooth',1500);tone(493.88,t0+1.55,1.6,.06,'sawtooth',1500);
+    /* 2s: kilau menyapu logo */
+    noise(t0+2,.6,2500,9000,.22,3);
+    [2637,3322,3951,5274].forEach((f,i)=>sine(f,t0+2.05+i*.08,.25,.04));
+  };
+  const hint=()=>{
+    const h=document.createElement('div');h.id='spHint';h.textContent='Ketuk layar untuk suara';
+    const sp=$('splash');if(!sp)return;sp.append(h);
+    const fire=()=>{['pointerdown','keydown','touchstart'].forEach(v=>removeEventListener(v,fire));
+      Promise.race([c.resume(),new Promise(r=>setTimeout(r,300))]).then(()=>{h.remove();if(c.state==='running')go()})};
+    ['pointerdown','keydown','touchstart'].forEach(v=>addEventListener(v,fire,{passive:true}));
+  };
+  Promise.race([c.resume(),new Promise(r=>setTimeout(r,150))]).then(()=>c.state==='running'?go():hint());
+}
+function sndToggle(){S.soundOff=!S.soundOff;save();if(!S.soundOff)notifSound(true);render()}
 function ntTest(){notify('Tes notifikasi My Life','Kalau ini muncul, pengingat absen sudah siap.','test').then(ok=>toast(ok?'Notifikasi terkirim':'Notifikasi gagal. Cek izin di Chrome.'))}
 function exportICS(){
   if(!S.courses.length){toast('Belum ada jadwal kuliah');return}
@@ -632,7 +778,7 @@ function exportICS(){
   const p2=n=>String(n).padStart(2,'0'),ics=t=>String(t).replace(/[\\;,]/g,m=>'\\'+m).replace(/\n/g,'\\n');
   const f=d=>`${d.getFullYear()}${p2(d.getMonth()+1)}${p2(d.getDate())}T${p2(d.getHours())}${p2(d.getMinutes())}00`;
   const now=new Date(),us=now.toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
-  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//My Life//Sabil OS//ID','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:Jadwal Kuliah UNSAM','X-WR-TIMEZONE:Asia/Jakarta',
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//My Life//ID','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:Jadwal Kuliah UNSAM','X-WR-TIMEZONE:Asia/Jakarta',
     'BEGIN:VTIMEZONE','TZID:Asia/Jakarta','BEGIN:STANDARD','DTSTART:19700101T000000','TZOFFSETFROM:+0700','TZOFFSETTO:+0700','TZNAME:WIB','END:STANDARD','END:VTIMEZONE'];
   S.courses.forEach(c=>{
     if(!dm[c.day])return;
@@ -657,27 +803,21 @@ function checkAbsen(){
 }
 
 function render(){viewToday();viewKuliah();viewUang();viewGym();viewRute();viewAgenda();viewAbsen()}
-const LOGO=rx=>`<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13A89E"/><stop offset="1" stop-color="#1F5FD6"/></linearGradient></defs><rect width="512" height="512" rx="${rx}" fill="url(#lg)"/><circle cx="256" cy="256" r="150" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="34"/><path class="lg-arc" d="M256 106A150 150 0 1 1 150 362" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round"/><path class="lg-ck" d="M196 262l44 44 82-96" fill="none" stroke="#fff" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/><circle class="lg-dot" cx="256" cy="106" r="22" fill="#FFC857"/></svg>`;
+const LOGO=rx=>`<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><defs><linearGradient id="mlBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0A2540"/><stop offset=".55" stop-color="#0B7A75"/><stop offset="1" stop-color="#19C3B5"/></linearGradient><linearGradient id="mlRg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD36E"/><stop offset=".5" stop-color="#fff"/><stop offset="1" stop-color="#6DF2E0"/></linearGradient><radialGradient id="mlGl" cx=".5" cy=".38" r=".6"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="512" height="512" rx="${rx}" fill="url(#mlBg)"/><rect width="512" height="512" rx="${rx}" fill="url(#mlGl)"/><circle cx="256" cy="256" r="148" fill="none" stroke="#fff" stroke-opacity=".14" stroke-width="30"/><path class="lg-arc" d="M256 108A148 148 0 1 1 116.9 205.4" fill="none" stroke="url(#mlRg)" stroke-width="30" stroke-linecap="round"/><path class="lg-ck" d="M186 326V196L256 272L326 196V326" fill="none" stroke="#fff" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/><circle class="lg-dot" cx="116.9" cy="205.4" r="22" fill="#FFC857"/></svg>`;
 const svgURI=x=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x);
-(async()=>{try{
-  const img=new Image();img.src=svgURI(LOGO(0));await img.decode();
-  const mk=n=>{const c=document.createElement('canvas');c.width=c.height=n;c.getContext('2d').drawImage(img,0,0,n,n);return c.toDataURL('image/png')};
-  const add=(rel,href)=>{const l=document.createElement('link');l.rel=rel;l.href=href;document.head.append(l)};
-  ICON=mk(192);add('icon',svgURI(LOGO(110)));add('apple-touch-icon',mk(180));
-  if(location.protocol.startsWith('http')){
-    const u=location.href.split('#')[0].split('?')[0];
-    add('manifest',URL.createObjectURL(new Blob([JSON.stringify({name:'My Life — Sabil Os',short_name:'My Life',id:u,start_url:u,scope:u.replace(/[^/]*$/,''),display:'standalone',orientation:'portrait',background_color:'#0B5E70',theme_color:'#0B7A75',icons:[{src:mk(192),sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:mk(512),sizes:'512x512',type:'image/png',purpose:'any maskable'}]})],{type:'application/manifest+json'})));
-  }
-}catch(e){}})();
+ICON='icons/icon-192.png';
 let dp=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('instBtn').hidden=false});
 function installApp(){if(dp){dp.prompt();dp=null;$('instBtn').hidden=true}}
 $('eD').value=iso();render();tickClock();checkAbsen();
-$('spLogo').innerHTML=LOGO(110);
-const spWait=matchMedia('(prefers-reduced-motion:reduce)').matches?400:2100;
+$('spLogo').innerHTML=LOGO(0);
+$('spT').innerHTML=[...'My Life'].map((ch,i)=>`<span style="--d:${(.95+i*.07).toFixed(2)}s">${ch===' '?'&nbsp;':ch}</span>`).join('');
+$('spDots').innerHTML=Array.from({length:26},()=>{const z=2+Math.random()*4;return `<u style="left:${(Math.random()*100).toFixed(1)}%;width:${z.toFixed(1)}px;height:${z.toFixed(1)}px;animation-duration:${(4+Math.random()*4).toFixed(1)}s;animation-delay:${(-Math.random()*5).toFixed(1)}s"></u>`}).join('');
+introSound();
+const spWait=matchMedia('(prefers-reduced-motion:reduce)').matches?400:3200;
 setTimeout(()=>$('splash').classList.add('gone'),spWait);
 setTimeout(()=>enter('today'),spWait+180);
 setTimeout(()=>$('splash')?.remove(),spWait+800);
-tShow();setTBtn();setInterval(tickStop,15000);
+gChips();tShow();setTBtn();setInterval(tickStop,15000);
 const SAIKO='<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB347"/><stop offset="1" stop-color="#F2504B"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#sk)"/><path d="M17 26h30l-2.2 21.5a4 4 0 0 1-4 3.5H23.2a4 4 0 0 1-4-3.5z" fill="#fff"/><path d="M25 27v-4a7 7 0 0 1 14 0v4" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/><path d="M37 35.4c-1.4-2-6.6-1.8-6.6 1.3 0 3.4 6.8 1.8 6.8 5.4 0 3.1-5.8 3.2-7.6 1" fill="none" stroke="#F2504B" stroke-width="2.8" stroke-linecap="round"/></svg>';
 const UNSAM_FB='<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="uf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2459B8"/><stop offset="1" stop-color="#0B2E6B"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#uf)"/><path d="M32 10l17 6v14c0 11-7 19-17 24-10-5-17-13-17-24V16z" fill="none" stroke="#FFC857" stroke-width="3"/><text x="32" y="38" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-weight="800" font-size="15" fill="#fff">US</text></svg>';
 $('lgS').innerHTML=SAIKO;
